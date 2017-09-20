@@ -4,7 +4,6 @@
 
 **目录结构**
 
-
         AipSdk.Baidu.Aip
         ├── Ocr                              //文字识别
         ├── Face                             //人脸识别
@@ -15,9 +14,9 @@
         └── Speech                           //语音合成&语音识别
 
 
-**使用Nuget管理**
+**使用NuGet管理**
 
-在Nuget中搜索 `Baidu.AI`，安装最新版即可。
+在NuGet中搜索 `Baidu.AI`，安装最新版即可。
 
 地址 https://www.nuget.org/packages/Baidu.AI/
 
