@@ -108,5 +108,27 @@ namespace Baidu.Aip.Demo
             result = client.ObjectDetect(image, options);
             Console.WriteLine(result);
         }
+        
+        public void PlantDetectDemo() {
+            var image = File.ReadAllBytes("图片文件路径");
+            // 调用植物识别
+            var result = client.PlantDetect(image);
+            Console.WriteLine(result);
+        }
+        
+        public void AnimalDetectDemo() {
+            var image = File.ReadAllBytes("图片文件路径");
+            // 调用动物识别
+            var result = client.AnimalDetect(image);
+            Console.WriteLine(result);
+            // 如果有可选参数
+            var options = new Dictionary<string, object>{
+                {"top_num", 3 } 
+            };
+            // 带参数调用动物识别
+            result = client.AnimalDetect(image, options);
+            Console.WriteLine(result);
+        }
+        
     }
 }

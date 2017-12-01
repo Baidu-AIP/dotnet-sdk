@@ -44,15 +44,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Demo.cs" />
     <Compile Include="ImageCensorDemo.cs" />
     <Compile Include="ImageClassifyDemo.cs" />
+    <Compile Include="ImageSearchDemo.cs" />
     <Compile Include="KgDemo.cs" />
-    <Compile Include="Main.cs" />
     <Compile Include="NlpDemo.cs" />
     <Compile Include="OcrDemo.cs" />
     <Compile Include="FaceDemo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QPSTest.cs" />
     <Compile Include="SpeechDemo.cs" />
   </ItemGroup>
   <ItemGroup>

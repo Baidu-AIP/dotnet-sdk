@@ -55,6 +55,7 @@ namespace Baidu.Aip
             Method = "GET";
             BodyType = BodyFormat.Formed;
             ContentEncoding = Encoding.UTF8;
+            System.Net.ServicePointManager.Expect100Continue = false;
         }
 
         public AipHttpRequest(string uri) : this()

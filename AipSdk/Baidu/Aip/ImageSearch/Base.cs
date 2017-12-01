@@ -14,7 +14,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
-namespace Baidu.Aip.ImageClassify
+namespace Baidu.Aip.ImageSearch
 {
     public class Base : AipServiceBase
     {

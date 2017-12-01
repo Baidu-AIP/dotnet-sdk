@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("Baidu.AI")]
-[assembly: AssemblyDescription(@"Official release of Baidu Ai(http://ai.baidu.com) SDK, including Speech, Face, NLP, OCR, ImageClassify etc.")]
+[assembly: AssemblyDescription(@"Official release of Baidu AI(http://ai.baidu.com) SDK, including Speech, Face, NLP, OCR, ImageClassify etc.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Baidu")]
 [assembly: AssemblyProduct("AipSDK")]
@@ -36,5 +36,5 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("3.0.0.*")]
+[assembly: AssemblyVersion("3.2.2.*")]
 //[assembly: AssemblyFileVersion("3.0.*")]

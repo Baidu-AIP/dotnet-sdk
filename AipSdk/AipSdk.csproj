@@ -65,6 +65,8 @@
     <Compile Include="Baidu\Aip\ImageCensor\Solution.cs" />
     <Compile Include="Baidu\Aip\ImageClassify\Base.cs" />
     <Compile Include="Baidu\Aip\ImageClassify\ImageClassify.cs" />
+    <Compile Include="Baidu\Aip\ImageSearch\Base.cs" />
+    <Compile Include="Baidu\Aip\ImageSearch\ImageSearch.cs" />
     <Compile Include="Baidu\Aip\Kg\Base.cs" />
     <Compile Include="Baidu\Aip\Kg\Pie.cs" />
     <Compile Include="Baidu\Aip\Nlp\Nlp.cs" />
@@ -78,6 +80,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="nuget.sh" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

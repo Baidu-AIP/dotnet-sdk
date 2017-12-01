@@ -17,7 +17,7 @@ namespace Baidu.Aip.Face
 {
     public abstract class Base : AipServiceBase
     {
-        protected const string FACE_DETECT_URL = "https://aip.baidubce.com/rest/2.0/face/v1/detect";
+        protected const string FACE_DETECT_URL = "https://aip.baidubce.com/rest/2.0/face/v2/detect";
         protected const string FACE_MATCH_URL = "https://aip.baidubce.com/rest/2.0/face/v2/match";
 
         protected const string FACE_SEARCH_FACESET_USER_ADD_URL =
