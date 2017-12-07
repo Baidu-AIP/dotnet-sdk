@@ -114,8 +114,9 @@ namespace Baidu.Aip
             ret.ReadWriteTimeout = 30000;
             ret.Timeout = 30000;
             var body = ProcessHttpRequest(ret);
-            ret.GetRequestStream().Write(body, 0, body.Length);
-            ret.GetRequestStream().Close();
+            var stream = ret.GetRequestStream();
+            stream.Write(body, 0, ContentEncoding.GetString(body).Length);
+            stream.Close();
             return ret;
         }
 
@@ -132,8 +133,9 @@ namespace Baidu.Aip
             ret.Timeout = 30000;
             var body = ProcessHttpRequest(ret);
             Auth.CloudRequest(this, ak, sk);
-            ret.GetRequestStream().Write(body, 0, body.Length);
-            ret.GetRequestStream().Close();
+            var stream = ret.GetRequestStream();
+            stream.Write(body, 0, ContentEncoding.GetString(body).Length);
+            stream.Close();
             return ret;
         }
 
@@ -147,8 +149,9 @@ namespace Baidu.Aip
             ret.ReadWriteTimeout = 30000;
             ret.Timeout = 30000;
             var body = ProcessHttpRequest(ret);
-            ret.GetRequestStream().Write(body, 0, body.Length);
-            ret.GetRequestStream().Close();
+            var stream = ret.GetRequestStream();
+            stream.Write(body, 0, ContentEncoding.GetString(body).Length);
+            stream.Close();
             return ret;
         }
     }
