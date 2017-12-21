@@ -165,8 +165,8 @@ namespace Baidu.Aip
         {
             if (DebugLog)
             {
-                var dateStr = DateTime.Now.ToString("[yyyyMMdd HH:mm:ss] ");
-                Console.WriteLine(dateStr + msg);
+                var dateStr = DateTime.Now.ToString("[yyyyMMdd HH:mm:ss]");
+                Console.WriteLine("{0} [{1}] {2}", dateStr, GetType().FullName, msg);
             }
         }
 
@@ -179,5 +179,35 @@ namespace Baidu.Aip
 
             public string Url { get; set; }
         }
+        
+        // common service for all interface
+        /// <summary>
+        /// 反馈接口
+        /// 用于用户反馈模型的效果，用户必须至少反馈一个 true/false 来表示对该结果是否满意，同时可选择反馈详细的评价。
+        /// http://ai.baidu.com/docs#/ImageCensoring-API/top
+        /// </summary>
+        /// <param name="data">
+        /// demo: 具体参考文档
+        ///    {
+        ///        "api_url": "https://aip.baidubce.com/rest/2.0/antiporn/v1/detect",
+        ///        "image_logid": 123456,
+        ///        "level": 1,
+        ///        "correct": 1
+        ///    }
+        /// </param>
+        /// <returns></returns>
+        public JObject Report(IEnumerable<Dictionary<string, object>> data)
+        {
+            var aipReq = new AipHttpRequest("https://aip.baidubce.com/rpc/2.0/feedback/v1/report")
+            {
+                Method = "POST",
+                BodyType = AipHttpRequest.BodyFormat.Json    
+            };
+            CheckNotNull(data, "data");
+            aipReq.Bodys["feedback"] = data;
+            PreAction();
+            return PostAction(aipReq);
+        }
+        
     }
 }
