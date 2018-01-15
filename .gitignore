@@ -288,3 +288,4 @@ __pycache__/
 *.xsd.cs
 /AipSdk/sdk-release/
 /AipSdk/AipSdk.nuspec
+.DS_Store
