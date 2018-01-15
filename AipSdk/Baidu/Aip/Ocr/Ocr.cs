@@ -63,6 +63,9 @@ namespace Baidu.Aip.Ocr
         private const string RECEIPT =
             "https://aip.baidubce.com/rest/2.0/ocr/v1/receipt";
         
+        private const string CUSTOM =
+            "https://aip.baidubce.com/rest/2.0/solution/v1/iocr/recognise";
+        
         private const string TABLE_RECOGNIZE =
             "https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/request";
         
@@ -542,6 +545,33 @@ namespace Baidu.Aip.Ocr
             
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 自定义模版文字识别接口
+        /// 自定义模版文字识别，是针对百度官方没有推出相应的模版，但是当用户需要对某一类卡证/票据（如房产证、军官证、火车票等）进行结构化的提取内容时，可以使用该产品快速制作模版，进行识别。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="templateSign">您在自定义文字识别平台制作的模版的ID</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Custom(byte[] image, string templateSign, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(CUSTOM);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["templateSign"] = templateSign;
             PreAction();
 
             if (options != null)

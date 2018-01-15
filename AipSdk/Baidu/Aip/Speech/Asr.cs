@@ -77,7 +77,7 @@ namespace Baidu.Aip.Speech
         /// <param name="rate"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public JObject Recoginze(string url, string callback, string format, int rate,
+        public JObject Recognize(string url, string callback, string format, int rate,
             Dictionary<string, object> options = null)
         {
             PreAction();

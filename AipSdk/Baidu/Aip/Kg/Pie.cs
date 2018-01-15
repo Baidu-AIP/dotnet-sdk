@@ -67,7 +67,7 @@ namespace Baidu.Aip.Kg
         /// <param name="urlPattern">url pattern</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>limit_count</c>: 限制解析数量limit_count为0时进行全量任务，limit_count>0时只解析limit_count数量的页面 </item>
+        ///           <item>  <c>limit_count</c>: 限制解析数量limit_count为0时进行全量任务，limit_count&gt;0时只解析limit_count数量的页面 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>

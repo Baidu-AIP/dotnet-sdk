@@ -34,6 +34,9 @@ namespace Baidu.Aip.Face
         private const string VERIFY =
             "https://aip.baidubce.com/rest/2.0/face/v2/verify";
         
+        private const string MULTI_IDENTIFY =
+            "https://aip.baidubce.com/rest/2.0/face/v2/multi-identify";
+        
         private const string USER_ADD =
             "https://aip.baidubce.com/rest/2.0/face/v2/faceset/user/add";
         
@@ -173,6 +176,35 @@ namespace Baidu.Aip.Face
             var aipReq = DefaultRequest(VERIFY);
             
             aipReq.Bodys["uid"] = uid;
+            aipReq.Bodys["group_id"] = groupId;
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// M:N 识别接口
+        /// </summary>
+        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br/>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>ext_fields</c>: 特殊返回信息，多个用逗号分隔，取值固定: 目前支持faceliveness(活体检测)。**注：需要用于判断活体的图片，图片中的人脸像素面积需要不小于100px\*100px，人脸长宽与图片长宽比例，不小于1/3** </item>
+        ///           <item>  <c>detect_top_num</c>: 检测多少个人脸进行比对，默认值1（最对返回10个） </item>
+        ///           <item>  <c>user_top_num</c>: 返回识别结果top人数”，当同一个人有多张图片时，只返回比对最高的1个分数（即，scores参数只有一个值），默认为1（最多返回20个） </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject MultiIdentify(string groupId, byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(MULTI_IDENTIFY);
+            
             aipReq.Bodys["group_id"] = groupId;
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
