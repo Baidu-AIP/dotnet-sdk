@@ -1,6 +1,6 @@
 # 百度AI开放平台 .Net SDK
 
-**支持平台：.Net Framework 3.5 及以上版本**
+**支持平台：.Net Framework 3.5/4.0/4.5 , Core 2.0**
 
 **目录结构**
 
@@ -32,4 +32,6 @@
 
 ## 使用文档
 
-参考[百度AI开放平台官方文档](http://ai.baidu.com/docs)
+工程请使用vs2017打开。
+
+接口参考[百度AI开放平台官方文档](http://ai.baidu.com/docs)
