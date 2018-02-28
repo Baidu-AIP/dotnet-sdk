@@ -1,88 +1,27 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EB8F1053-5BF8-40AE-9883-53F32011D6D9}</ProjectGuid>
-    <ProjectTypeGuids>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>
-    </RootNamespace>
-    <AssemblyName>AipSdk</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <LangVersion>4</LangVersion>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>net35;net40;net45;netstandard2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Baidu.AI</PackageId>
+    <Version>3.3.2</Version>
+    <Authors>Baidu</Authors>
+    <Company>Baidu</Company>
+    <Product>ai.baidu.com</Product>
+    <Description>Official release of Baidu AI(http://ai.baidu.com) SDK, including Speech, Face, NLP, OCR, ImageClassify etc.</Description>
+    <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>https://ai.baidu.com</PackageProjectUrl>
+    <PackageIconUrl>https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png</PackageIconUrl>
+    <Copyright>Copyright 2018</Copyright>
+    <PackageTags>Baidu AI SDK AIP</PackageTags>
+    <RepositoryUrl>https://github.com/Baidu-AIP/dotnet-sdk</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>Add netstandard2.0 support</PackageReleaseNotes>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>sdk-release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>sdk-release\AipSdk.XML</DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net35\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Baidu\Aip\AipException.cs" />
-    <Compile Include="Baidu\Aip\AipHttpRequest.cs" />
-    <Compile Include="Baidu\Aip\AipServiceBase.cs" />
-    <Compile Include="Baidu\Aip\Auth.cs" />
-    <Compile Include="Baidu\Aip\Define.cs" />
-    <Compile Include="Baidu\Aip\Face\Face.cs" />
-    <Compile Include="Baidu\Aip\ImageCensor\AntiPorn.cs" />
-    <Compile Include="Baidu\Aip\ImageCensor\AntiTerror.cs" />
-    <Compile Include="Baidu\Aip\ImageCensor\Base.cs" />
-    <Compile Include="Baidu\Aip\ImageCensor\ImageCensor.cs" />
-    <Compile Include="Baidu\Aip\ImageCensor\Solution.cs" />
-    <Compile Include="Baidu\Aip\ImageClassify\ImageClassify.cs" />
-    <Compile Include="Baidu\Aip\ImageSearch\ImageSearch.cs" />
-    <Compile Include="Baidu\Aip\Kg\Pie.cs" />
-    <Compile Include="Baidu\Aip\Nlp\Nlp.cs" />
-    <Compile Include="Baidu\Aip\Ocr\Ocr.cs" />
-    <Compile Include="Baidu\Aip\Speech\Asr.cs" />
-    <Compile Include="Baidu\Aip\Speech\Base.cs" />
-    <Compile Include="Baidu\Aip\Speech\Tts.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Folder Include="Properties\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="nuget.sh" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
