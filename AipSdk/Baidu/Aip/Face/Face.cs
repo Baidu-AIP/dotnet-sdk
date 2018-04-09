@@ -61,6 +61,12 @@ namespace Baidu.Aip.Face
         private const string GROUP_DELETEUSER =
             "https://aip.baidubce.com/rest/2.0/face/v2/faceset/group/deleteuser";
         
+        private const string PERSON_VERIFY =
+            "https://aip.baidubce.com/rest/2.0/face/v2/person/verify";
+        
+        private const string FACEVERIFY =
+            "https://aip.baidubce.com/rest/2.0/face/v2/faceverify";
+        
         public Face(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
@@ -332,7 +338,7 @@ namespace Baidu.Aip.Face
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>start</c>: 默认值0，起始序号 </item>
-        ///           <item>  <c>end</c>: 返回数量，默认值100，最大值1000 </item>
+        ///           <item>  <c>num</c>: 返回数量，默认值100，最大值1000 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -356,7 +362,7 @@ namespace Baidu.Aip.Face
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>start</c>: 默认值0，起始序号 </item>
-        ///           <item>  <c>end</c>: 返回数量，默认值100，最大值1000 </item>
+        ///           <item>  <c>num</c>: 返回数量，默认值100，最大值1000 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -418,6 +424,65 @@ namespace Baidu.Aip.Face
             
             aipReq.Bodys["group_id"] = groupId;
             aipReq.Bodys["uid"] = uid;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 身份验证接口
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="idCardNumber">身份证号（真实身份证号号码）。我们的服务端会做格式校验，并通过错误码返回，但是为了您的产品反馈体验更及时，建议在产品前端做一下号码格式校验与反馈</param>
+        /// <param name="name">utf8，姓名（真实姓名，和身份证号匹配）</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>quality</c>: 判断图片中的人脸质量是否符合条件。use表示需要做质量控制，质量不符合条件的照片会被直接拒绝 </item>
+        ///           <item>  <c>quality_conf</c>: 人脸质量检测中每一项指标的具体阈值设定，json串形式，当指定quality:use时生效 </item>
+        ///           <item>  <c>faceliveness</c>: 判断活体值是否达标。use表示需要做活体检测，低于活体阈值的照片会直接拒绝 </item>
+        ///           <item>  <c>faceliveness_conf</c>: 人脸活体检测的阈值设定，json串形式，当指定faceliveness:use时生效。默认使用的阈值如下：{faceliveness：0.834963} </item>
+        ///           <item>  <c>ext_fields</c>: 可选项为faceliveness，qualities。选择具体的项，则返回参数中将会显示相应的扩展字段。如faceliveness表示返回结果中包含活体相关内容，qualities表示返回结果中包含质量检测相关内容 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject PersonVerify(byte[] image, string idCardNumber, string name, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PERSON_VERIFY);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["id_card_number"] = idCardNumber;
+            aipReq.Bodys["name"] = name;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 在线活体检测接口
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>max_face_num</c>: 最多处理人脸数目，默认值1 </item>
+        ///           <item>  <c>face_fields</c>: 如不选择此项，返回结果默认只有人脸框、概率和旋转角度。可选参数为qualities、faceliveness。qualities：图片质量相关判断；faceliveness：活体判断。如果两个参数都需要选择，请使用半角逗号分隔。 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Faceverify(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(FACEVERIFY);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
             PreAction();
 
             if (options != null)

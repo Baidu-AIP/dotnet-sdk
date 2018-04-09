@@ -34,6 +34,7 @@ namespace Baidu.Aip
             SecretKey = secretKey;
             ExpireAt = DateTime.Now;
             DebugLog = false;
+            Timeout = 60000;
         }
 
         protected string Token { get; set; }
@@ -42,6 +43,11 @@ namespace Baidu.Aip
         public string ApiKey { get; set; }
         public string SecretKey { get; set; }
         public bool DebugLog { get; set; }
+
+        /// <summary>
+        /// in millisecond
+        /// </summary>
+        public int Timeout { get; set; }
 
 
         protected virtual void DoAuthorization()
@@ -113,8 +119,8 @@ namespace Baidu.Aip
         protected virtual HttpWebRequest GenerateWebRequest(AipHttpRequest aipRequest)
         {
             return IsDev
-                ? aipRequest.GenerateDevWebRequest(Token)
-                : aipRequest.GenerateCloudRequest(ApiKey, SecretKey);
+                ? aipRequest.GenerateDevWebRequest(Token, Timeout)
+                : aipRequest.GenerateCloudRequest(ApiKey, SecretKey, Timeout);
         }
 
         protected string SendRequet(AipHttpRequest aipRequest)

@@ -48,7 +48,7 @@ namespace Baidu.Aip.Speech
 
         protected override HttpWebRequest GenerateWebRequest(AipHttpRequest aipRequest)
         {
-            return aipRequest.GenerateSpeechRequest();
+            return aipRequest.GenerateSpeechRequest(this.Timeout);
         }
     }
 }

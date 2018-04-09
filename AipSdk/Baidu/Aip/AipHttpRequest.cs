@@ -106,13 +106,14 @@ namespace Baidu.Aip
         ///     生成AI的Web请求
         /// </summary>
         /// <param name="token"></param>
+        /// <param name="timeout"></param>
         /// <returns></returns>
-        public HttpWebRequest GenerateDevWebRequest(string token)
+        public HttpWebRequest GenerateDevWebRequest(string token, int timeout)
         {
             Querys.Add("access_token", token);
             var ret = (HttpWebRequest) WebRequest.Create(UriWithQuery);
-            ret.ReadWriteTimeout = 30000;
-            ret.Timeout = 30000;
+            ret.ReadWriteTimeout = timeout;
+            ret.Timeout = timeout;
             var body = ProcessHttpRequest(ret);
             var stream = ret.GetRequestStream();
             stream.Write(body, 0, body.Length);
@@ -125,14 +126,15 @@ namespace Baidu.Aip
         /// </summary>
         /// <param name="ak"></param>
         /// <param name="sk"></param>
+        /// <param name="timeout"></param>
         /// <returns></returns>
-        public HttpWebRequest GenerateCloudRequest(string ak, string sk)
+        public HttpWebRequest GenerateCloudRequest(string ak, string sk, int timeout)
         {
             var ret = (HttpWebRequest) WebRequest.Create(UriWithQuery);
+            ret.ReadWriteTimeout = timeout;
+            ret.Timeout = timeout;
             var body = ProcessHttpRequest(ret);
             Auth.CloudRequest(this, ak, sk);
-//            ret.GetRequestStream().Write(body, 0, body.Length);
-//            ret.GetRequestStream().Close();
             var stream = ret.GetRequestStream();
             stream.Write(body, 0, body.Length);
             stream.Close();
@@ -143,9 +145,11 @@ namespace Baidu.Aip
         ///     生成语音的Web请求
         /// </summary>
         /// <returns></returns>
-        public HttpWebRequest GenerateSpeechRequest()
+        public HttpWebRequest GenerateSpeechRequest(int timeout)
         {
             var ret = (HttpWebRequest) WebRequest.Create(Uri);
+            ret.ReadWriteTimeout = timeout;
+            ret.Timeout = timeout;
             var body = ProcessHttpRequest(ret);
             var stream = ret.GetRequestStream();
             stream.Write(body, 0, body.Length);

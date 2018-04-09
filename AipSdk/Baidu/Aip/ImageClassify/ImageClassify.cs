@@ -22,6 +22,9 @@ namespace Baidu.Aip.ImageClassify
     /// </summary>
     public class ImageClassify : AipServiceBase   {
         
+        private const string ADVANCED_GENERAL =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v2/advanced_general";
+        
         private const string DISH_DETECT =
             "https://aip.baidubce.com/rest/2.0/image-classify/v2/dish";
         
@@ -59,6 +62,31 @@ namespace Baidu.Aip.ImageClassify
                 BodyType = AipHttpRequest.BodyFormat.Formed,
                 ContentEncoding = Encoding.UTF8
             };
+        }
+
+        /// <summary>
+        /// 通用物体识别接口
+        /// 该请求用于通用物体及场景识别，即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片中的多个物体及场景标签。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject AdvancedGeneral(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(ADVANCED_GENERAL);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
         }
 
         /// <summary>
@@ -115,7 +143,7 @@ namespace Baidu.Aip.ImageClassify
 
         /// <summary>
         /// logo商标识别接口
-        /// 该请求用于检测和识别图片中的品牌LOGO信息。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片中LOGO的名称、位置和置信度。 当效果欠佳时，可以建立子库（请加入QQ群：649285136 联系工作人员申请建库）并自定义logo入库，提高识别效果。
+        /// 该请求用于检测和识别图片中的品牌LOGO信息。即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片中LOGO的名称、位置和置信度。当效果欠佳时，可以建立子库（在[控制台](https://console.bce.baidu.com/ai/#/ai/imagerecognition/overview/index)创建应用并申请建库）并通过调用logo入口接口完成自定义logo入库，提高识别效果。
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -141,7 +169,7 @@ namespace Baidu.Aip.ImageClassify
 
         /// <summary>
         /// logo商标识别—添加接口
-        /// 该接口尚在邀测阶段，使用该接口之前需要线下联系工作人员完成建库方可使用，请加入QQ群：649285136 联系相关人员。
+        /// 使用入库接口请先在[控制台](https://console.bce.baidu.com/ai/#/ai/imagerecognition/overview/index)创建应用并申请建库，建库成功后方可正常使用。
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="brief">brief，检索时带回。此处要传对应的name与code字段，name长度小于100B，code长度小于150B</param>
@@ -168,7 +196,7 @@ namespace Baidu.Aip.ImageClassify
 
         /// <summary>
         /// logo商标识别—删除接口
-        /// 该接口尚在邀测阶段，使用该接口之前需要线下联系工作人员完成建库方可使用，请加入QQ群：649285136 联系相关人员。
+        /// 使用删除接口请先在[控制台](https://console.bce.baidu.com/ai/#/ai/imagerecognition/overview/index)创建应用并申请建库，建库成功后先调用入库接口完成logo图片入库，删除接口用户在已入库的logo图片中删除图片。
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -192,7 +220,7 @@ namespace Baidu.Aip.ImageClassify
         }
         /// <summary>
         /// logo商标识别—删除接口
-        /// 该接口尚在邀测阶段，使用该接口之前需要线下联系工作人员完成建库方可使用，请加入QQ群：649285136 联系相关人员。
+        /// 使用删除接口请先在[控制台](https://console.bce.baidu.com/ai/#/ai/imagerecognition/overview/index)创建应用并申请建库，建库成功后先调用入库接口完成logo图片入库，删除接口用户在已入库的logo图片中删除图片。
         /// </summary>
         /// <param name="contSign">图片签名（和image二选一，image优先级更高）</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括

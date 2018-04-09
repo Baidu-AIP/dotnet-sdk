@@ -66,6 +66,9 @@ namespace Baidu.Aip.Ocr
         private const string CUSTOM =
             "https://aip.baidubce.com/rest/2.0/solution/v1/iocr/recognise";
         
+        private const string FORM =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/form";
+        
         private const string TABLE_RECOGNIZE =
             "https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/request";
         
@@ -371,7 +374,7 @@ namespace Baidu.Aip.Ocr
         /// 用户向服务请求识别身份证，身份证识别包括正面和背面。
         /// </summary>
         /// <param name="image">二进制图像数据</param>
-        /// <param name="idCardSide">front：身份证正面；back：身份证背面</param>
+        /// <param name="idCardSide">front：身份证含照片的一面；back：身份证带国徽的一面</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>detect_direction</c>: 是否检测图像朝向，默认不检测，即：false。朝向是指输入图像是正常方向、逆时针旋转90/180/270度。可选值包括:<br>- true：检测朝向；<br>- false：不检测朝向。 </item>
@@ -572,6 +575,31 @@ namespace Baidu.Aip.Ocr
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
             aipReq.Bodys["templateSign"] = templateSign;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 表格文字识别同步接口接口
+        /// 自动识别表格线及表格内容，结构化输出表头、表尾及每个单元格的文字内容。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Form(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(FORM);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
             PreAction();
 
             if (options != null)
