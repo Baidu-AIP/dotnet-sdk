@@ -72,6 +72,7 @@ namespace Baidu.Aip.ImageSearch
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>brief</c>: 检索时原样带回,最长256B。 </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -97,6 +98,10 @@ namespace Baidu.Aip.ImageSearch
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///           <item>  <c>tag_logic</c>: 检索时tag之间的逻辑， 0：逻辑and，1：逻辑or </item>
+        ///           <item>  <c>pn</c>: 分页功能，起始位置，例：0。未指定分页时，默认返回前300个结果；接口返回数量最大限制1000条，例如：起始位置为900，截取条数500条，接口也只返回第900 - 1000条的结果，共计100条 </item>
+        ///           <item>  <c>rn</c>: 分页功能，截取条数，例：250 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -171,6 +176,7 @@ namespace Baidu.Aip.ImageSearch
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>brief</c>: 检索时原样带回,最长256B。 </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -196,6 +202,10 @@ namespace Baidu.Aip.ImageSearch
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///           <item>  <c>tag_logic</c>: 检索时tag之间的逻辑， 0：逻辑and，1：逻辑or </item>
+        ///           <item>  <c>pn</c>: 分页功能，起始位置，例：0。未指定分页时，默认返回前300个结果；接口返回数量最大限制1000条，例如：起始位置为900，截取条数500条，接口也只返回第900 - 1000条的结果，共计100条 </item>
+        ///           <item>  <c>rn</c>: 分页功能，截取条数，例：250 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -299,6 +309,8 @@ namespace Baidu.Aip.ImageSearch
         ///     <list type="bullet">
         ///           <item>  <c>class_id1</c>: 商品分类维度1，支持1-60范围内的整数。检索时可圈定该分类维度进行检索 </item>
         ///           <item>  <c>class_id2</c>: 商品分类维度1，支持1-60范围内的整数。检索时可圈定该分类维度进行检索 </item>
+        ///           <item>  <c>pn</c>: 分页功能，起始位置，例：0。未指定分页时，默认返回前300个结果；接口返回数量最大限制1000条，例如：起始位置为900，截取条数500条，接口也只返回第900 - 1000条的结果，共计100条 </item>
+        ///           <item>  <c>rn</c>: 分页功能，截取条数，例：250 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>

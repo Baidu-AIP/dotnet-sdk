@@ -28,9 +28,12 @@ namespace Baidu.Aip
         public enum BodyFormat
         {
             Formed,
-            Json
+            Json,
+            JsonRaw // 只取Body["RAW"]的内容
         }
 
+        public const string BodyFormatJsonRawKey = "RAw";
+        
         public Dictionary<string, object> Bodys;
 
         public BodyFormat BodyType;
@@ -95,6 +98,12 @@ namespace Baidu.Aip
                 case BodyFormat.Json:
                 {
                     var body = JsonConvert.SerializeObject(Bodys);
+                    webRequest.ContentType = "application/json";
+                    return ContentEncoding.GetBytes(body);
+                }
+                case BodyFormat.JsonRaw:
+                {
+                    var body = JsonConvert.SerializeObject(Bodys[BodyFormatJsonRawKey]);
                     webRequest.ContentType = "application/json";
                     return ContentEncoding.GetBytes(body);
                 }

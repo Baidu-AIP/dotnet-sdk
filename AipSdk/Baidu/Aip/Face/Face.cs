@@ -23,83 +23,118 @@ namespace Baidu.Aip.Face
     public class Face : AipServiceBase   {
         
         private const string DETECT =
-            "https://aip.baidubce.com/rest/2.0/face/v2/detect";
+            "https://aip.baidubce.com/rest/2.0/face/v3/detect";
         
-        private const string MATCH =
-            "https://aip.baidubce.com/rest/2.0/face/v2/match";
-        
-        private const string IDENTIFY =
-            "https://aip.baidubce.com/rest/2.0/face/v2/identify";
-        
-        private const string VERIFY =
-            "https://aip.baidubce.com/rest/2.0/face/v2/verify";
-        
-        private const string MULTI_IDENTIFY =
-            "https://aip.baidubce.com/rest/2.0/face/v2/multi-identify";
+        private const string SEARCH =
+            "https://aip.baidubce.com/rest/2.0/face/v3/search";
         
         private const string USER_ADD =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/user/add";
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add";
         
         private const string USER_UPDATE =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/user/update";
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/update";
         
-        private const string USER_DELETE =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/user/delete";
+        private const string FACE_DELETE =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/delete";
         
         private const string USER_GET =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/user/get";
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/get";
         
-        private const string GROUP_GETLIST =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/group/getlist";
+        private const string FACE_GETLIST =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/face/getlist";
         
         private const string GROUP_GETUSERS =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/group/getusers";
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/getusers";
         
-        private const string GROUP_ADDUSER =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/group/adduser";
+        private const string USER_COPY =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/copy";
         
-        private const string GROUP_DELETEUSER =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceset/group/deleteuser";
+        private const string USER_DELETE =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/delete";
+        
+        private const string GROUP_ADD =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/add";
+        
+        private const string GROUP_DELETE =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/delete";
+        
+        private const string GROUP_GETLIST =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceset/group/getlist";
         
         private const string PERSON_VERIFY =
-            "https://aip.baidubce.com/rest/2.0/face/v2/person/verify";
+            "https://aip.baidubce.com/rest/2.0/face/v3/person/verify";
         
         private const string FACEVERIFY =
-            "https://aip.baidubce.com/rest/2.0/face/v2/faceverify";
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceverify";
+        
+        private const string VIDEO_SESSIONCODE =
+            "https://aip.baidubce.com/rest/2.0/face/v1/faceliveness/sessioncode";
+        
+        private const string VIDEO_FACELIVENESS =
+            "https://aip.baidubce.com/rest/2.0/face/v1/faceliveness/verify";
         
         public Face(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
         }
 
+
+        private const string MATCH = "https://aip.baidubce.com/rest/2.0/face/v3/match";
+
         protected AipHttpRequest DefaultRequest(string uri)
         {
             return new AipHttpRequest(uri)
             {
                 Method = "POST",
-                BodyType = AipHttpRequest.BodyFormat.Formed,
+                BodyType = AipHttpRequest.BodyFormat.Json,
                 ContentEncoding = Encoding.UTF8
             };
         }
 
         /// <summary>
+        /// 人脸对比接口
+        /// 两张人脸图片相似度对比：比对两张图片中人脸的相似度，并返回相似度分值
+        /// </summary>
+        /// <param name="faces">
+        /// 数组成员必须是JObject，每个JObject均为string:string的key:value对，具体key如下：
+        ///          image: 必须，图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断
+        ///          image_type: 必须，图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个
+        ///          face_type: 可选，人脸的类型 LIVE表示生活照：通常为手机、相机拍摄的人像图片、或从网络获取的人像图片等 IDCARD表示身份证芯片照：二代身份证内置芯片中的人像照片 WATERMARK表示带水印证件照：一般为带水印的小图，如公安网小图 CERT表示证件照片：如拍摄的身份证、工卡、护照、学生证等证件图片 默认LIVE
+        ///          quality_control: 可选，质量控制 NONE: 不进行控制 LOW:较低的质量要求 NORMAL: 一般的质量要求 HIGH: 较高的质量要求 默认NONE
+        ///          liveness_control: 可选，活体控制 NONE: 不进行控制 LOW:较低的活体要求(高通过率 低攻击拒绝率) NORMAL: 一般的活体要求(平衡的攻击拒绝率, 通过率) HIGH: 较高的活体要求(高攻击拒绝率 低通过率) 默认NONE
+        /// </param>
+        /// <returns></returns>
+        public JObject Match(JArray faces)
+        {
+            CheckNotNull(faces, "faces");
+            var aipReq = DefaultRequest(MATCH);
+            aipReq.BodyType = AipHttpRequest.BodyFormat.JsonRaw;
+            PreAction();
+            aipReq.Bodys[AipHttpRequest.BodyFormatJsonRawKey] = faces;
+            return PostAction(aipReq);
+
+        }
+
+        /// <summary>
         /// 人脸检测接口
         /// </summary>
-        /// <param name="image">二进制图像数据</param>
+        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
+        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>max_face_num</c>: 最多处理人脸数目，默认值1 </item>
-        ///           <item>  <c>face_fields</c>: 包括age,beauty,expression,faceshape,gender,glasses,landmark,race,qualities信息，逗号分隔，默认只返回人脸框、概率和旋转角度 </item>
+        ///           <item>  <c>face_field</c>: 包括**age,beauty,expression,faceshape,gender,glasses,landmark,race,quality,facetype,parsing信息**  <br> 逗号分隔. 默认只返回face_token、人脸框、概率和旋转角度 </item>
+        ///           <item>  <c>max_face_num</c>: 最多处理人脸的数目，默认值为1，仅检测图片中面积最大的那个人脸；**最大值10**，检测图片中面积最大的几张人脸。 </item>
+        ///           <item>  <c>face_type</c>: 人脸的类型 **LIVE**表示生活照：通常为手机、相机拍摄的人像图片、或从网络获取的人像图片等**IDCARD**表示身份证芯片照：二代身份证内置芯片中的人像照片 **WATERMARK**表示带水印证件照：一般为带水印的小图，如公安网小图 **CERT**表示证件照片：如拍摄的身份证、工卡、护照、学生证等证件图片 默认**LIVE** </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject Detect(byte[] image, Dictionary<string, object> options = null)
+        public JObject Detect(string image, string imageType, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(DETECT);
             
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["image"] = image;
+            aipReq.Bodys["image_type"] = imageType;
             PreAction();
 
             if (options != null)
@@ -109,111 +144,28 @@ namespace Baidu.Aip.Face
         }
 
         /// <summary>
-        /// 人脸比对接口
+        /// 人脸搜索接口
         /// </summary>
-        /// <param name="images">二进制图像数据</param>
+        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
+        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
+        /// <param name="groupIdList">从指定的group中进行查找 用逗号分隔，**上限20个**</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>ext_fields</c>: 返回质量信息，取值固定:目前支持qualities(质量检测)。(对所有图片都会做改处理) </item>
-        ///           <item>  <c>image_liveness</c>: 返回的活体信息，“faceliveness,faceliveness” 表示对比对的两张图片都做活体检测；“,faceliveness” 表示对第一张图片不做活体检测、第二张图做活体检测；“faceliveness,” 表示对第一张图片做活体检测、第二张图不做活体检测；<br>**注：需要用于判断活体的图片，图片中的人脸像素面积需要不小于100px\*100px，人脸长宽与图片长宽比例，不小于1/3** </item>
-        ///           <item>  <c>types</c>: 请求对比的两张图片的类型，示例：“7,13”<br>**12**表示带水印证件照：一般为带水印的小图，如公安网小图<br>**7**表示生活照：通常为手机、相机拍摄的人像图片、或从网络获取的人像图片等<br>**13**表示证件照片：如拍摄的身份证、工卡、护照、学生证等证件图片，**注**：需要确保人脸部分不可太小，通常为100px\*100px </item>
+        ///           <item>  <c>quality_control</c>: 图片质量控制  **NONE**: 不进行控制 **LOW**:较低的质量要求 **NORMAL**: 一般的质量要求 **HIGH**: 较高的质量要求 **默认 NONE** </item>
+        ///           <item>  <c>liveness_control</c>: 活体检测控制  **NONE**: 不进行控制 **LOW**:较低的活体要求(高通过率 低攻击拒绝率) **NORMAL**: 一般的活体要求(平衡的攻击拒绝率, 通过率) **HIGH**: 较高的活体要求(高攻击拒绝率 低通过率) **默认NONE** </item>
+        ///           <item>  <c>user_id</c>: 当需要对特定用户进行比对时，指定user_id进行比对。即人脸认证功能。 </item>
+        ///           <item>  <c>max_user_num</c>: 查找后返回的用户数量。返回相似度最高的几个用户，默认为1，最多返回20个。 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject Match(IEnumerable<byte[]> images, Dictionary<string, object> options = null)
+        public JObject Search(string image, string imageType, string groupIdList, Dictionary<string, object> options = null)
         {
-            var aipReq = DefaultRequest(MATCH);
+            var aipReq = DefaultRequest(SEARCH);
             
-            CheckNotNull(images, "images");
-            aipReq.Bodys["images"] = ImagesToParams(images);
-            PreAction();
-
-            if (options != null)
-                foreach (var pair in options)
-                    aipReq.Bodys[pair.Key] = pair.Value;
-            return PostAction(aipReq);
-        }
-
-        /// <summary>
-        /// 人脸识别接口
-        /// </summary>
-        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br/>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
-        /// <param name="image">二进制图像数据</param>
-        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
-        ///     <list type="bullet">
-        ///           <item>  <c>ext_fields</c>: 特殊返回信息，多个用逗号分隔，取值固定: 目前支持faceliveness(活体检测)。**注：需要用于判断活体的图片，图片中的人脸像素面积需要不小于100px\*100px，人脸长宽与图片长宽比例，不小于1/3** </item>
-        ///           <item>  <c>user_top_num</c>: 返回用户top数，默认为1，最多返回5个 </item>
-        ///     </list>
-        /// </param>
-        /// <return>JObject</return>
-        ///
-        public JObject Identify(string groupId, byte[] image, Dictionary<string, object> options = null)
-        {
-            var aipReq = DefaultRequest(IDENTIFY);
-            
-            aipReq.Bodys["group_id"] = groupId;
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
-            PreAction();
-
-            if (options != null)
-                foreach (var pair in options)
-                    aipReq.Bodys[pair.Key] = pair.Value;
-            return PostAction(aipReq);
-        }
-
-        /// <summary>
-        /// 人脸认证接口
-        /// </summary>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
-        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br/>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
-        /// <param name="image">二进制图像数据</param>
-        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
-        ///     <list type="bullet">
-        ///           <item>  <c>top_num</c>: 返回用户top数，默认为1 </item>
-        ///           <item>  <c>ext_fields</c>: 特殊返回信息，多个用逗号分隔，取值固定: 目前支持faceliveness(活体检测)。**注：需要用于判断活体的图片，图片中的人脸像素面积需要不小于100px\*100px，人脸长宽与图片长宽比例，不小于1/3** </item>
-        ///     </list>
-        /// </param>
-        /// <return>JObject</return>
-        ///
-        public JObject Verify(string uid, string groupId, byte[] image, Dictionary<string, object> options = null)
-        {
-            var aipReq = DefaultRequest(VERIFY);
-            
-            aipReq.Bodys["uid"] = uid;
-            aipReq.Bodys["group_id"] = groupId;
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
-            PreAction();
-
-            if (options != null)
-                foreach (var pair in options)
-                    aipReq.Bodys[pair.Key] = pair.Value;
-            return PostAction(aipReq);
-        }
-
-        /// <summary>
-        /// M:N 识别接口
-        /// </summary>
-        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br/>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
-        /// <param name="image">二进制图像数据</param>
-        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
-        ///     <list type="bullet">
-        ///           <item>  <c>ext_fields</c>: 特殊返回信息，多个用逗号分隔，取值固定: 目前支持faceliveness(活体检测)。**注：需要用于判断活体的图片，图片中的人脸像素面积需要不小于100px\*100px，人脸长宽与图片长宽比例，不小于1/3** </item>
-        ///           <item>  <c>detect_top_num</c>: 检测多少个人脸进行比对，默认值1（最对返回10个） </item>
-        ///           <item>  <c>user_top_num</c>: 返回识别结果top人数”，当同一个人有多张图片时，只返回比对最高的1个分数（即，scores参数只有一个值），默认为1（最多返回20个） </item>
-        ///     </list>
-        /// </param>
-        /// <return>JObject</return>
-        ///
-        public JObject MultiIdentify(string groupId, byte[] image, Dictionary<string, object> options = null)
-        {
-            var aipReq = DefaultRequest(MULTI_IDENTIFY);
-            
-            aipReq.Bodys["group_id"] = groupId;
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["image"] = image;
+            aipReq.Bodys["image_type"] = imageType;
+            aipReq.Bodys["group_id_list"] = groupIdList;
             PreAction();
 
             if (options != null)
@@ -225,26 +177,27 @@ namespace Baidu.Aip.Face
         /// <summary>
         /// 人脸注册接口
         /// </summary>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
-        /// <param name="userInfo">用户资料，长度限制256B</param>
-        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
-        /// <param name="image">二进制图像数据</param>
+        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
+        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>action_type</c>: 参数包含append、replace。**如果为“replace”，则每次注册时进行替换replace（新增或更新）操作，默认为append操作**。例如：uid在库中已经存在时，对此uid重复注册时，新注册的图片默认会**追加**到该uid下，如果手动选择`action_type:replace`，则会用新图替换库中该uid下所有图片。 </item>
+        ///           <item>  <c>user_info</c>: 用户资料，长度限制256B </item>
+        ///           <item>  <c>quality_control</c>: 图片质量控制  **NONE**: 不进行控制 **LOW**:较低的质量要求 **NORMAL**: 一般的质量要求 **HIGH**: 较高的质量要求 **默认 NONE** </item>
+        ///           <item>  <c>liveness_control</c>: 活体检测控制  **NONE**: 不进行控制 **LOW**:较低的活体要求(高通过率 低攻击拒绝率) **NORMAL**: 一般的活体要求(平衡的攻击拒绝率, 通过率) **HIGH**: 较高的活体要求(高攻击拒绝率 低通过率) **默认NONE** </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject UserAdd(string uid, string userInfo, string groupId, byte[] image, Dictionary<string, object> options = null)
+        public JObject UserAdd(string image, string imageType, string groupId, string userId, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(USER_ADD);
             
-            aipReq.Bodys["uid"] = uid;
-            aipReq.Bodys["user_info"] = userInfo;
+            aipReq.Bodys["image"] = image;
+            aipReq.Bodys["image_type"] = imageType;
             aipReq.Bodys["group_id"] = groupId;
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["user_id"] = userId;
             PreAction();
 
             if (options != null)
@@ -256,26 +209,27 @@ namespace Baidu.Aip.Face
         /// <summary>
         /// 人脸更新接口
         /// </summary>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
-        /// <param name="userInfo">用户资料，长度限制256B</param>
+        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
+        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
         /// <param name="groupId">更新指定groupid下uid对应的信息</param>
-        /// <param name="image">二进制图像数据</param>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>action_type</c>: 目前仅支持replace，uid不存在时，不报错，会自动变为注册操作；未选择该参数时，如果uid不存在会提示错误 </item>
+        ///           <item>  <c>user_info</c>: 用户资料，长度限制256B </item>
+        ///           <item>  <c>quality_control</c>: 图片质量控制  **NONE**: 不进行控制 **LOW**:较低的质量要求 **NORMAL**: 一般的质量要求 **HIGH**: 较高的质量要求 **默认 NONE** </item>
+        ///           <item>  <c>liveness_control</c>: 活体检测控制  **NONE**: 不进行控制 **LOW**:较低的活体要求(高通过率 低攻击拒绝率) **NORMAL**: 一般的活体要求(平衡的攻击拒绝率, 通过率) **HIGH**: 较高的活体要求(高攻击拒绝率 低通过率) **默认NONE** </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject UserUpdate(string uid, string userInfo, string groupId, byte[] image, Dictionary<string, object> options = null)
+        public JObject UserUpdate(string image, string imageType, string groupId, string userId, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(USER_UPDATE);
             
-            aipReq.Bodys["uid"] = uid;
-            aipReq.Bodys["user_info"] = userInfo;
+            aipReq.Bodys["image"] = image;
+            aipReq.Bodys["image_type"] = imageType;
             aipReq.Bodys["group_id"] = groupId;
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["user_id"] = userId;
             PreAction();
 
             if (options != null)
@@ -287,19 +241,22 @@ namespace Baidu.Aip.Face
         /// <summary>
         /// 人脸删除接口
         /// </summary>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="faceToken">需要删除的人脸图片token，（由数字、字母、下划线组成）长度限制64B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>group_id</c>: 删除指定groupid下uid对应的信息 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject UserDelete(string uid, Dictionary<string, object> options = null)
+        public JObject FaceDelete(string userId, string groupId, string faceToken, Dictionary<string, object> options = null)
         {
-            var aipReq = DefaultRequest(USER_DELETE);
+            var aipReq = DefaultRequest(FACE_DELETE);
             
-            aipReq.Bodys["uid"] = uid;
+            aipReq.Bodys["user_id"] = userId;
+            aipReq.Bodys["group_id"] = groupId;
+            aipReq.Bodys["face_token"] = faceToken;
             PreAction();
 
             if (options != null)
@@ -311,19 +268,20 @@ namespace Baidu.Aip.Face
         /// <summary>
         /// 用户信息查询接口
         /// </summary>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>group_id</c>: 选择指定group_id则只查找group列表下的uid内容，如果不指定则查找所有group下对应uid的信息 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject UserGet(string uid, Dictionary<string, object> options = null)
+        public JObject UserGet(string userId, string groupId, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(USER_GET);
             
-            aipReq.Bodys["uid"] = uid;
+            aipReq.Bodys["user_id"] = userId;
+            aipReq.Bodys["group_id"] = groupId;
             PreAction();
 
             if (options != null)
@@ -333,20 +291,22 @@ namespace Baidu.Aip.Face
         }
 
         /// <summary>
-        /// 组列表查询接口
+        /// 获取用户人脸列表接口
         /// </summary>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>start</c>: 默认值0，起始序号 </item>
-        ///           <item>  <c>num</c>: 返回数量，默认值100，最大值1000 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject GroupGetlist(Dictionary<string, object> options = null)
+        public JObject FaceGetlist(string userId, string groupId, Dictionary<string, object> options = null)
         {
-            var aipReq = DefaultRequest(GROUP_GETLIST);
+            var aipReq = DefaultRequest(FACE_GETLIST);
             
+            aipReq.Bodys["user_id"] = userId;
+            aipReq.Bodys["group_id"] = groupId;
             PreAction();
 
             if (options != null)
@@ -356,13 +316,13 @@ namespace Baidu.Aip.Face
         }
 
         /// <summary>
-        /// 组内用户列表查询接口
+        /// 获取用户列表接口
         /// </summary>
         /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>start</c>: 默认值0，起始序号 </item>
-        ///           <item>  <c>num</c>: 返回数量，默认值100，最大值1000 </item>
+        ///           <item>  <c>length</c>: 返回数量，默认值100，最大值1000 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -381,24 +341,22 @@ namespace Baidu.Aip.Face
         }
 
         /// <summary>
-        /// 组间复制用户接口
+        /// 复制用户接口
         /// </summary>
-        /// <param name="srcGroupId">从指定group里复制信息</param>
-        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br/>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
+        ///           <item>  <c>src_group_id</c>: 从指定组里复制信息 </item>
+        ///           <item>  <c>dst_group_id</c>: 需要添加用户的组id </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject GroupAdduser(string srcGroupId, string groupId, string uid, Dictionary<string, object> options = null)
+        public JObject UserCopy(string userId, Dictionary<string, object> options = null)
         {
-            var aipReq = DefaultRequest(GROUP_ADDUSER);
+            var aipReq = DefaultRequest(USER_COPY);
             
-            aipReq.Bodys["src_group_id"] = srcGroupId;
-            aipReq.Bodys["group_id"] = groupId;
-            aipReq.Bodys["uid"] = uid;
+            aipReq.Bodys["user_id"] = userId;
             PreAction();
 
             if (options != null)
@@ -408,22 +366,91 @@ namespace Baidu.Aip.Face
         }
 
         /// <summary>
-        /// 组内删除用户接口
+        /// 删除用户接口
         /// </summary>
-        /// <param name="groupId">用户组id，标识一组用户（由数字、字母、下划线组成），长度限制128B。如果需要将一个uid注册到多个group下，group\_id需要用多个逗号分隔，每个group_id长度限制为48个英文字符。**注：group无需单独创建，注册用户时则会自动创建group。**<br/>**产品建议**：根据您的业务需求，可以将需要注册的用户，按照业务划分，分配到不同的group下，例如按照会员手机尾号作为groupid，用于刷脸支付、会员计费消费等，这样可以尽可能控制每个group下的用户数与人脸数，提升检索的准确率</param>
-        /// <param name="uid">用户id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="userId">用户id（由数字、字母、下划线组成），长度限制128B</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject GroupDeleteuser(string groupId, string uid, Dictionary<string, object> options = null)
+        public JObject UserDelete(string groupId, string userId, Dictionary<string, object> options = null)
         {
-            var aipReq = DefaultRequest(GROUP_DELETEUSER);
+            var aipReq = DefaultRequest(USER_DELETE);
             
             aipReq.Bodys["group_id"] = groupId;
-            aipReq.Bodys["uid"] = uid;
+            aipReq.Bodys["user_id"] = userId;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 创建用户组接口
+        /// </summary>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject GroupAdd(string groupId, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(GROUP_ADD);
+            
+            aipReq.Bodys["group_id"] = groupId;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 删除用户组接口
+        /// </summary>
+        /// <param name="groupId">用户组id（由数字、字母、下划线组成），长度限制128B</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject GroupDelete(string groupId, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(GROUP_DELETE);
+            
+            aipReq.Bodys["group_id"] = groupId;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 组列表查询接口
+        /// </summary>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>start</c>: 默认值0，起始序号 </item>
+        ///           <item>  <c>length</c>: 返回数量，默认值100，最大值1000 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject GroupGetlist(Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(GROUP_GETLIST);
+            
             PreAction();
 
             if (options != null)
@@ -435,26 +462,24 @@ namespace Baidu.Aip.Face
         /// <summary>
         /// 身份验证接口
         /// </summary>
-        /// <param name="image">二进制图像数据</param>
-        /// <param name="idCardNumber">身份证号（真实身份证号号码）。我们的服务端会做格式校验，并通过错误码返回，但是为了您的产品反馈体验更及时，建议在产品前端做一下号码格式校验与反馈</param>
+        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
+        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
+        /// <param name="idCardNumber">身份证号（真实身份证号号码）</param>
         /// <param name="name">utf8，姓名（真实姓名，和身份证号匹配）</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>quality</c>: 判断图片中的人脸质量是否符合条件。use表示需要做质量控制，质量不符合条件的照片会被直接拒绝 </item>
-        ///           <item>  <c>quality_conf</c>: 人脸质量检测中每一项指标的具体阈值设定，json串形式，当指定quality:use时生效 </item>
-        ///           <item>  <c>faceliveness</c>: 判断活体值是否达标。use表示需要做活体检测，低于活体阈值的照片会直接拒绝 </item>
-        ///           <item>  <c>faceliveness_conf</c>: 人脸活体检测的阈值设定，json串形式，当指定faceliveness:use时生效。默认使用的阈值如下：{faceliveness：0.834963} </item>
-        ///           <item>  <c>ext_fields</c>: 可选项为faceliveness，qualities。选择具体的项，则返回参数中将会显示相应的扩展字段。如faceliveness表示返回结果中包含活体相关内容，qualities表示返回结果中包含质量检测相关内容 </item>
+        ///           <item>  <c>quality_control</c>: 图片质量控制  **NONE**: 不进行控制 **LOW**:较低的质量要求 **NORMAL**: 一般的质量要求 **HIGH**: 较高的质量要求 **默认 NONE** </item>
+        ///           <item>  <c>liveness_control</c>: 活体检测控制  **NONE**: 不进行控制 **LOW**:较低的活体要求(高通过率 低攻击拒绝率) **NORMAL**: 一般的活体要求(平衡的攻击拒绝率, 通过率) **HIGH**: 较高的活体要求(高攻击拒绝率 低通过率) **默认NONE** </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject PersonVerify(byte[] image, string idCardNumber, string name, Dictionary<string, object> options = null)
+        public JObject PersonVerify(string image, string imageType, string idCardNumber, string name, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(PERSON_VERIFY);
             
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["image"] = image;
+            aipReq.Bodys["image_type"] = imageType;
             aipReq.Bodys["id_card_number"] = idCardNumber;
             aipReq.Bodys["name"] = name;
             PreAction();
@@ -468,21 +493,68 @@ namespace Baidu.Aip.Face
         /// <summary>
         /// 在线活体检测接口
         /// </summary>
-        /// <param name="image">二进制图像数据</param>
+        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
+        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
-        ///           <item>  <c>max_face_num</c>: 最多处理人脸数目，默认值1 </item>
-        ///           <item>  <c>face_fields</c>: 如不选择此项，返回结果默认只有人脸框、概率和旋转角度。可选参数为qualities、faceliveness。qualities：图片质量相关判断；faceliveness：活体判断。如果两个参数都需要选择，请使用半角逗号分隔。 </item>
+        ///           <item>  <c>face_field</c>: 包括**age,beauty,expression,faceshape,gender,glasses,landmark,race,quality,facetype,parsing信息**，逗号分隔，默认只返回face_token、活体数、人脸框、概率和旋转角度 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject Faceverify(byte[] image, Dictionary<string, object> options = null)
+        public JObject Faceverify(string image, string imageType, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(FACEVERIFY);
             
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["image"] = image;
+            aipReq.Bodys["image_type"] = imageType;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 语音校验码接口接口
+        /// </summary>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>appid</c>: 百度云创建应用时的唯一标识ID </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject VideoSessioncode(Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(VIDEO_SESSIONCODE);
+            
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 视频活体检测接口接口
+        /// </summary>
+        /// <param name="sessionId">语音校验码会话id，使用此接口的前提是已经调用了语音校验码接口</param>
+        /// <param name="videoBase64">base64编码后的视频数据（视频限制：最佳为上传5-15s的mp4文件。视频编码方式：h264编码；音频编码格式：aac，pcm均可。）</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject VideoFaceliveness(string sessionId, string videoBase64, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(VIDEO_FACELIVENESS);
+            
+            aipReq.Bodys["session_id"] = sessionId;
+            aipReq.Bodys["video_base64"] = videoBase64;
             PreAction();
 
             if (options != null)

@@ -63,9 +63,6 @@ namespace Baidu.Aip.Ocr
         private const string RECEIPT =
             "https://aip.baidubce.com/rest/2.0/ocr/v1/receipt";
         
-        private const string CUSTOM =
-            "https://aip.baidubce.com/rest/2.0/solution/v1/iocr/recognise";
-        
         private const string FORM =
             "https://aip.baidubce.com/rest/2.0/ocr/v1/form";
         
@@ -74,6 +71,30 @@ namespace Baidu.Aip.Ocr
         
         private const string TABLE_RESULT_GET =
             "https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result";
+        
+        private const string VAT_INVOICE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/vat_invoice";
+        
+        private const string QRCODE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/qrcode";
+        
+        private const string NUMBERS =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/numbers";
+        
+        private const string LOTTERY =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/lottery";
+        
+        private const string PASSPORT =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/passport";
+        
+        private const string BUSINESS_CARD =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/business_card";
+        
+        private const string HANDWRITING =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/handwriting";
+        
+        private const string CUSTOM =
+            "https://aip.baidubce.com/rest/2.0/solution/v1/iocr/recognise";
         
         public Ocr(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
@@ -557,33 +578,6 @@ namespace Baidu.Aip.Ocr
         }
 
         /// <summary>
-        /// 自定义模版文字识别接口
-        /// 自定义模版文字识别，是针对百度官方没有推出相应的模版，但是当用户需要对某一类卡证/票据（如房产证、军官证、火车票等）进行结构化的提取内容时，可以使用该产品快速制作模版，进行识别。
-        /// </summary>
-        /// <param name="image">二进制图像数据</param>
-        /// <param name="templateSign">您在自定义文字识别平台制作的模版的ID</param>
-        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
-        ///     <list type="bullet">
-        ///     </list>
-        /// </param>
-        /// <return>JObject</return>
-        ///
-        public JObject Custom(byte[] image, string templateSign, Dictionary<string, object> options = null)
-        {
-            var aipReq = DefaultRequest(CUSTOM);
-            
-            CheckNotNull(image, "image");
-            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
-            aipReq.Bodys["templateSign"] = templateSign;
-            PreAction();
-
-            if (options != null)
-                foreach (var pair in options)
-                    aipReq.Bodys[pair.Key] = pair.Value;
-            return PostAction(aipReq);
-        }
-
-        /// <summary>
         /// 表格文字识别同步接口接口
         /// 自动识别表格线及表格内容，结构化输出表头、表尾及每个单元格的文字内容。
         /// </summary>
@@ -650,6 +644,212 @@ namespace Baidu.Aip.Ocr
             var aipReq = DefaultRequest(TABLE_RESULT_GET);
             
             aipReq.Bodys["request_id"] = requestId;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 增值税发票识别接口
+        /// 此接口需要您在页面中提交合作咨询开通权限】 识别并结构化返回增值税发票的各个字段及其对应值，包含了发票基础信息9项，货物相关信息12项，购买方/销售方的名称、识别号、地址电话、开户行及账号，共29项结构化字段。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject VatInvoice(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(VAT_INVOICE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 二维码识别接口
+        /// 【此接口需要您在[页面](http://ai.baidu.com/tech/ocr)中提交合作咨询开通权限识别条形码、二维码中包含的URL或其他信息内容
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Qrcode(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(QRCODE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 数字识别接口
+        /// 【此接口需要您在[页面](http://ai.baidu.com/tech/ocr)中提交合作咨询开通权限】对图像中的阿拉伯数字进行识别提取，适用于快递单号、手机号、充值码提取等场景
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>recognize_granularity</c>: 是否定位单字符位置，big：不定位单字符位置，默认值；small：定位单字符位置 </item>
+        ///           <item>  <c>detect_direction</c>: 是否检测图像朝向，默认不检测，即：false。朝向是指输入图像是正常方向、逆时针旋转90/180/270度。可选值包括:<br>- true：检测朝向；<br>- false：不检测朝向。 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Numbers(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(NUMBERS);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 彩票识别接口
+        /// 【此接口需要您在[页面](http://ai.baidu.com/tech/ocr)中提交合作咨询开通权限】对大乐透、双色球彩票进行识别，并返回识别结果
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>recognize_granularity</c>: 是否定位单字符位置，big：不定位单字符位置，默认值；small：定位单字符位置 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Lottery(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(LOTTERY);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 护照识别接口
+        /// 【此接口需要您在[页面](http://ai.baidu.com/tech/ocr)中提交合作咨询开通权限】支持对中国大陆居民护照的资料页进行结构化识别，包含国家码、姓名、性别、护照号、出生日期、签发日期、有效期至、签发地点。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Passport(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PASSPORT);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 名片识别接口
+        /// 【此接口需要您在[页面](http://ai.baidu.com/tech/ocr)中提交合作咨询开通权限】提供对各类名片的结构化识别功能，提取姓名、邮编、邮箱、电话、网址、地址、手机号字段
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject BusinessCard(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(BUSINESS_CARD);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 手写文字识别接口
+        /// 【此接口需要您在[页面](http://ai.baidu.com/tech/ocr)中提交合作咨询开通权限】提供对各类名片的结构化识别功能，提取姓名、邮编、邮箱、电话、网址、地址、手机号字段
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>recognize_granularity</c>: 是否定位单字符位置，big：不定位单字符位置，默认值；small：定位单字符位置 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Handwriting(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(HANDWRITING);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 自定义模板文字识别接口
+        /// 自定义模板文字识别，是针对百度官方没有推出相应的模板，但是当用户需要对某一类卡证/票据（如房产证、军官证、火车票等）进行结构化的提取内容时，可以使用该产品快速制作模板，进行识别。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="templateSign">您在自定义文字识别平台制作的模板的ID</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Custom(byte[] image, string templateSign, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(CUSTOM);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            aipReq.Bodys["templateSign"] = templateSign;
             PreAction();
 
             if (options != null)
