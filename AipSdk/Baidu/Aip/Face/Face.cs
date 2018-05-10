@@ -64,9 +64,6 @@ namespace Baidu.Aip.Face
         private const string PERSON_VERIFY =
             "https://aip.baidubce.com/rest/2.0/face/v3/person/verify";
         
-        private const string FACEVERIFY =
-            "https://aip.baidubce.com/rest/2.0/face/v3/faceverify";
-        
         private const string VIDEO_SESSIONCODE =
             "https://aip.baidubce.com/rest/2.0/face/v1/faceliveness/sessioncode";
         
@@ -80,6 +77,8 @@ namespace Baidu.Aip.Face
 
 
         private const string MATCH = "https://aip.baidubce.com/rest/2.0/face/v3/match";
+        private const string FACEVERIFY =
+            "https://aip.baidubce.com/rest/2.0/face/v3/faceverify";
 
         protected AipHttpRequest DefaultRequest(string uri)
         {
@@ -114,6 +113,29 @@ namespace Baidu.Aip.Face
             return PostAction(aipReq);
 
         }
+
+        /// <summary>
+        /// 在线活体检测接口
+        /// </summary>
+        /// <param name="faces">
+        /// 数组成员必须是JObject，每个JObject均为string:string的key:value对，具体key如下：
+        ///          image: 必须，图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断
+        ///          image_type: 必须，图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个
+        ///          face_field: 可选，包括age,beauty,expression,faceshape,gender,glasses,landmark,race,quality,facetype,parsing信息，逗号分隔，默认只返回face_token、活体数、人脸框、概率和旋转角度
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Faceverify(JArray faces)
+        {
+            CheckNotNull(faces, "faces");
+            var aipReq = DefaultRequest(FACEVERIFY);
+            aipReq.BodyType = AipHttpRequest.BodyFormat.JsonRaw;
+            PreAction();
+            aipReq.Bodys[AipHttpRequest.BodyFormatJsonRawKey] = faces;
+            return PostAction(aipReq);
+
+        }
+
 
         /// <summary>
         /// 人脸检测接口
@@ -482,32 +504,6 @@ namespace Baidu.Aip.Face
             aipReq.Bodys["image_type"] = imageType;
             aipReq.Bodys["id_card_number"] = idCardNumber;
             aipReq.Bodys["name"] = name;
-            PreAction();
-
-            if (options != null)
-                foreach (var pair in options)
-                    aipReq.Bodys[pair.Key] = pair.Value;
-            return PostAction(aipReq);
-        }
-
-        /// <summary>
-        /// 在线活体检测接口
-        /// </summary>
-        /// <param name="image">图片信息(**总数据大小应小于10M**)，图片上传方式根据image_type来判断</param>
-        /// <param name="imageType">图片类型 **BASE64**:图片的base64值，base64编码后的图片数据，需urlencode，编码后的图片大小不超过2M；**URL**:图片的 URL地址( 可能由于网络等原因导致下载图片时间过长)**；FACE_TOKEN**: 人脸图片的唯一标识，调用人脸检测接口时，会为每个人脸图片赋予一个唯一的FACE_TOKEN，同一张图片多次检测得到的FACE_TOKEN是同一个</param>
-        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
-        ///     <list type="bullet">
-        ///           <item>  <c>face_field</c>: 包括**age,beauty,expression,faceshape,gender,glasses,landmark,race,quality,facetype,parsing信息**，逗号分隔，默认只返回face_token、活体数、人脸框、概率和旋转角度 </item>
-        ///     </list>
-        /// </param>
-        /// <return>JObject</return>
-        ///
-        public JObject Faceverify(string image, string imageType, Dictionary<string, object> options = null)
-        {
-            var aipReq = DefaultRequest(FACEVERIFY);
-            
-            aipReq.Bodys["image"] = image;
-            aipReq.Bodys["image_type"] = imageType;
             PreAction();
 
             if (options != null)
