@@ -28,8 +28,14 @@ namespace Baidu.Aip
         protected volatile bool HasDoneAuthoried; // 是否已经走过鉴权流程
         protected volatile bool IsDev;
 
-        protected AipServiceBase(string apiKey, string secretKey)
+        protected AipServiceBase(string apiKey, string secretKey): this("", apiKey, secretKey)
         {
+            
+        }
+        
+        protected AipServiceBase(string appId, string apiKey, string secretKey)
+        {
+            AppId = appId;
             ApiKey = apiKey;
             SecretKey = secretKey;
             ExpireAt = DateTime.Now;
@@ -40,6 +46,7 @@ namespace Baidu.Aip
         protected string Token { get; set; }
         protected DateTime ExpireAt { get; set; }
 
+        public string AppId { get; set; }
         public string ApiKey { get; set; }
         public string SecretKey { get; set; }
         public bool DebugLog { get; set; }

@@ -13,6 +13,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Baidu.Aip.Speech
@@ -22,10 +27,15 @@ namespace Baidu.Aip.Speech
     /// </summary>
     public class Asr : Base
     {
-        private const string UrlAsr = "https://vop.baidu.com/server_api";
+        public const string UrlAsr = "https://vop.baidu.com/server_api";
+        public const string UrlAsrStream = "https://vop.baidu.com/open/asr";
 
-        public Asr(string apiKey, string secretKey) : base(apiKey, secretKey)
+        //8k  2560 16k 5120
+        private const int AsrStreamingChunkDataSize = 2560;
+
+        public Asr(string appId, string apiKey, string secretKey) : base(appId, apiKey, secretKey)
         {
+
         }
 
         protected AipHttpRequest DefaultRequest(string uri)
@@ -101,5 +111,84 @@ namespace Baidu.Aip.Speech
             req.Bodys["token"] = Token;
             return PostAction(req);
         }
+
+        /// <summary>
+        /// 流式识别接口
+        /// </summary>
+        /// <param name="speech">语音数据，CanRead</param>
+        /// <param name="cuid">设备ID，可以填写mac地址</param>
+        /// <param name="format">pcm</param>
+        /// <param name="rate">16000</param>
+        /// <param name="pid">模型id，具体值参考文档</param>
+        /// <returns></returns>
+        /// <exception cref="AipException"></exception>
+        public JObject Recognize(Stream speech, string cuid, string format, int rate, int pid)
+        {
+            var asrBegin = new Dictionary<string, object>()
+            {
+                {"apikey", ApiKey},
+                {"secretkey", SecretKey},
+                {"appid", int.Parse(AppId)},
+                {"cuid", cuid},
+                {"sample_rate", rate},
+                {"format", format},
+                {"task_id", pid},
+            };
+            var asrBeginBodyStr = JsonConvert.SerializeObject(asrBegin, Formatting.None);
+            var beginPktBytes = new TlvPacket(TlvType.AsrBegin, asrBeginBodyStr).ToBytes();
+
+            var buf = new byte[AsrStreamingChunkDataSize];
+            var bytesReadAmt = speech.Read(buf, 0, AsrStreamingChunkDataSize);
+            if (bytesReadAmt == 0)
+            {
+                throw new AipException("Speech bytes stream empty");
+            }
+
+            var reqId = $"{Guid.NewGuid()}{Guid.NewGuid()}".Replace("-", "");
+            var urlWithId = $"{UrlAsrStream}?id={reqId}";
+            var req = (HttpWebRequest) WebRequest.Create(urlWithId);
+            req.Method = "POST";
+            req.ReadWriteTimeout = this.Timeout;
+            req.Timeout = this.Timeout;
+            req.SendChunked = true;
+            req.AllowWriteStreamBuffering = false;
+            req.ContentType = "application/octet-stream";
+
+            var reqStream = req.GetRequestStream();
+            reqStream.Write(beginPktBytes, 0, beginPktBytes.Length);
+            while (bytesReadAmt > 0)
+            {
+                var doingPktBytes = new TlvPacket(TlvType.AsrData, buf, bytesReadAmt).ToBytes();
+                reqStream.Write(doingPktBytes, 0, doingPktBytes.Length);
+                bytesReadAmt = speech.Read(buf, 0, AsrStreamingChunkDataSize);
+            }
+
+            var endPktBytes = new TlvPacket(TlvType.AsrEnd).ToBytes();
+            reqStream.Write(endPktBytes, 0, endPktBytes.Length);
+            reqStream.Close();
+            var resp = ((HttpWebResponse) req.GetResponse()).GetResponseStream();
+
+            var buf2 = Utils.StreamToBytes(resp);
+            var respPackets = TlvPacket.ParseFromBytes(buf2).ToList();
+
+            if (respPackets.Count == 0)
+            {
+                throw new AipException("Server return empty");
+            }
+
+            var respStr = "";
+            try
+            {
+                respStr = System.Text.Encoding.UTF8.GetString(respPackets[0].V);
+                var respObj = JsonConvert.DeserializeObject(respStr) as JObject;
+                return respObj;
+            }
+            catch (Exception e)
+            {
+                // 非json应该抛异常
+                throw new AipException($"{e.Message}{respStr}");
+            }
+        }
     }
 }
+

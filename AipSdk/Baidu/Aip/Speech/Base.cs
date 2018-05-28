@@ -22,6 +22,11 @@ namespace Baidu.Aip.Speech
         {
             IsDev = true;
         }
+        
+        public Base(string appId, string apiKey, string secretKey) : base(appId, apiKey, secretKey)
+        {
+            IsDev = true;
+        }
 
         protected string Cuid
         {
