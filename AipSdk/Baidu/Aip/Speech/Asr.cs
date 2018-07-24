@@ -113,7 +113,7 @@ namespace Baidu.Aip.Speech
         }
 
         /// <summary>
-        /// 流式识别接口
+        /// 流式识别接口(experimental)
         /// </summary>
         /// <param name="speech">语音数据，CanRead</param>
         /// <param name="cuid">设备ID，可以填写mac地址</param>

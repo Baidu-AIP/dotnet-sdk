@@ -55,6 +55,12 @@ namespace Baidu.Aip.Nlp
         private const string TOPIC =
             "https://aip.baidubce.com/rpc/2.0/nlp/v1/topic";
         
+        private const string ECNET =
+            "https://aip.baidubce.com/rpc/2.0/nlp/v1/ecnet";
+        
+        private const string EMOTION =
+            "https://aip.baidubce.com/rpc/2.0/nlp/v1/emotion";
+        
         public Nlp(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
@@ -338,6 +344,55 @@ namespace Baidu.Aip.Nlp
             
             aipReq.Bodys["title"] = title;
             aipReq.Bodys["content"] = content;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 文本纠错接口
+        /// 识别输入文本中有错误的片段，提示错误并给出正确的文本结果。支持短文本、长文本、语音等内容的错误识别，纠错是搜索引擎、语音识别、内容审查等功能更好运行的基础模块之一。
+        /// </summary>
+        /// <param name="text">待纠错文本，输入限制511字节</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Ecnet(string text, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(ECNET);
+            
+            aipReq.Bodys["text"] = text;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 对话情绪识别接口接口
+        /// 针对用户日常沟通文本背后所蕴含情绪的一种直观检测，可自动识别出当前会话者所表现出的情绪类别及其置信度，可以帮助企业更全面地把握产品服务质量、监控客户服务质量
+        /// </summary>
+        /// <param name="text">待识别情感文本，输入限制512字节</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>scene</c>: default（默认项-不区分场景），talk（闲聊对话-如度秘聊天等），task（任务型对话-如导航对话等），customer_service（客服对话-如电信/银行客服等） </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Emotion(string text, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(EMOTION);
+            
+            aipReq.Bodys["text"] = text;
             PreAction();
 
             if (options != null)

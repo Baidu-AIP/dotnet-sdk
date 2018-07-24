@@ -28,6 +28,9 @@ namespace Baidu.Aip.ImageSearch
         private const string SAME_HQ_SEARCH =
             "https://aip.baidubce.com/rest/2.0/realtime_search/same_hq/search";
         
+        private const string SAME_HQ_UPDATE =
+            "https://aip.baidubce.com/rest/2.0/realtime_search/same_hq/update";
+        
         private const string SAME_HQ_DELETE =
             "https://aip.baidubce.com/rest/2.0/realtime_search/same_hq/delete";
         
@@ -37,6 +40,9 @@ namespace Baidu.Aip.ImageSearch
         private const string SIMILAR_SEARCH =
             "https://aip.baidubce.com/rest/2.0/image-classify/v1/realtime_search/similar/search";
         
+        private const string SIMILAR_UPDATE =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/realtime_search/similar/update";
+        
         private const string SIMILAR_DELETE =
             "https://aip.baidubce.com/rest/2.0/image-classify/v1/realtime_search/similar/delete";
         
@@ -45,6 +51,9 @@ namespace Baidu.Aip.ImageSearch
         
         private const string PRODUCT_SEARCH =
             "https://aip.baidubce.com/rest/2.0/image-classify/v1/realtime_search/product/search";
+        
+        private const string PRODUCT_UPDATE =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/realtime_search/product/update";
         
         private const string PRODUCT_DELETE =
             "https://aip.baidubce.com/rest/2.0/image-classify/v1/realtime_search/product/delete";
@@ -121,6 +130,33 @@ namespace Baidu.Aip.ImageSearch
         }
 
         /// <summary>
+        /// 相同图检索—更新接口
+        /// 更新图库中图片的摘要和分类信息（具体变量为brief、tags）
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SameHqUpdate(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SAME_HQ_UPDATE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
         /// 相同图检索—删除接口
         /// 删除相同图
         /// </summary>
@@ -148,7 +184,7 @@ namespace Baidu.Aip.ImageSearch
         /// 相同图检索—删除接口
         /// 删除相同图
         /// </summary>
-        /// <param name="contSign">图片签名（和image二选一，image优先级更高）</param>
+        /// <param name="contSign">图片签名（和image二选一），**支持批量删除，批量删除时请勿传image，最多支持1000个cont_sign列表，**样例："932301884,1068006219;316336521,553141152;2491030726,1352091083"</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///     </list>
@@ -213,6 +249,33 @@ namespace Baidu.Aip.ImageSearch
         public JObject SimilarSearch(byte[] image, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(SIMILAR_SEARCH);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 相似图检索—更新接口
+        /// 更新图库中图片的摘要和分类信息（具体变量为brief、tags）
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SimilarUpdate(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SIMILAR_UPDATE);
             
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
@@ -318,6 +381,34 @@ namespace Baidu.Aip.ImageSearch
         public JObject ProductSearch(byte[] image, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(PRODUCT_SEARCH);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 商品检索—更新接口
+        /// 更新图库中图片的摘要和分类信息（具体变量为brief、class_id1/class_id2）
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>class_id1</c>: 更新的商品分类1，支持1-60范围内的整数。 </item>
+        ///           <item>  <c>class_id2</c>: 更新的商品分类2，支持1-60范围内的整数。 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject ProductUpdate(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PRODUCT_UPDATE);
             
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
