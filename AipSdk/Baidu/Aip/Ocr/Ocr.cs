@@ -889,8 +889,7 @@ namespace Baidu.Aip.Ocr
                     throw new AipException("SDK Error: Timeout for form recognition");
                 }
                 var tempResp = TableRecognitionGetResult(requestId, options);
-                JToken tp;
-                if (tempResp.TryGetValue("error_code", out tp))
+                if (tempResp.TryGetValue("error_code", out JToken tp))
                 {
                     Log("Table recognize: fail!");
                     return tempResp;

@@ -104,8 +104,7 @@ namespace Baidu.Aip.Speech
                     var obj = JsonConvert.DeserializeObject(respStr) as JObject;
                     ret.ErrorCode = (int) obj["err_no"];
                     ret.ErrorMsg = (string) obj["err_msg"];
-                    JToken temp;
-                    if (obj.TryGetValue("sn", out temp))
+                    if (obj.TryGetValue("sn", out JToken temp))
                         ret.Sn = temp.ToString();
 
                     if (obj.TryGetValue("idx", out temp))

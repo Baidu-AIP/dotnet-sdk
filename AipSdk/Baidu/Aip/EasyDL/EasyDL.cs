@@ -43,7 +43,7 @@ namespace Baidu.Aip.EasyDL
         /// <param name="image">声音数据原始二进制</param>
         /// <param name="options">可选参数</param>
         /// <returns></returns>
-        public JObject requestImage(string fullurl, byte[] image, Dictionary<string, object> options = null)
+        public JObject RequestImage(string fullurl, byte[] image, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(fullurl);
             
@@ -63,7 +63,7 @@ namespace Baidu.Aip.EasyDL
         /// <param name="sound">声音数据原始二进制</param>
         /// <param name="options">可选参数</param>
         /// <returns></returns>
-        public JObject requestSound(string fullurl, byte[] sound, Dictionary<string, object> options = null)
+        public JObject RequestSound(string fullurl, byte[] sound, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(fullurl);
             
