@@ -75,7 +75,8 @@ namespace Baidu.Aip.ImageSearch
 
         /// <summary>
         /// 相同图检索—入库接口
-        /// 相同图检索包含入库、检索、删除三个子接口；**在正式使用之前请在[控制台](https://console.bce.baidu.com/ai/#/ai/imagesearch/overview/index)创建应用后，在应用详情页申请建库，建库成功后方可正常使用入库、检索、删除三个接口**。
+        /// **该接口实现单张图片入库，入库时需要同步提交图片及可关联至本地图库的摘要信息（具体变量为brief，具体可传入图片在本地标记id、图片url、图片名称等）；同时可提交分类维度信息（具体变量为tags，最多可传入2个tag），方便对图库中的图片进行管理、分类检索。****注：重复添加完全相同的图片会返回错误。**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -99,10 +100,36 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 相同图检索—入库接口
+        /// **该接口实现单张图片入库，入库时需要同步提交图片及可关联至本地图库的摘要信息（具体变量为brief，具体可传入图片在本地标记id、图片url、图片名称等）；同时可提交分类维度信息（具体变量为tags，最多可传入2个tag），方便对图库中的图片进行管理、分类检索。****注：重复添加完全相同的图片会返回错误。**
+
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 检索时原样带回,最长256B。 </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SameHqAddUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SAME_HQ_ADD);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 相同图检索—检索接口
-        /// 相同图检索包含入库、检索、删除三个子接口；**在正式使用之前请在[控制台](https://console.bce.baidu.com/ai/#/ai/imagesearch/overview/index)创建应用后，在应用详情页申请建库，建库成功后方可正常使用入库、检索、删除三个接口**。
+        /// 完成入库后，可使用该接口实现相同图检索。**支持传入指定分类维度（具体变量tags）进行检索，返回结果支持翻页（具体变量pn、rn）。****请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息。**
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -128,10 +155,38 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 相同图检索—检索接口
+        /// 完成入库后，可使用该接口实现相同图检索。**支持传入指定分类维度（具体变量tags）进行检索，返回结果支持翻页（具体变量pn、rn）。****请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息。**
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///           <item>  <c>tag_logic</c>: 检索时tag之间的逻辑， 0：逻辑and，1：逻辑or </item>
+        ///           <item>  <c>pn</c>: 分页功能，起始位置，例：0。未指定分页时，默认返回前300个结果；接口返回数量最大限制1000条，例如：起始位置为900，截取条数500条，接口也只返回第900 - 1000条的结果，共计100条 </item>
+        ///           <item>  <c>rn</c>: 分页功能，截取条数，例：250 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SameHqSearchUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SAME_HQ_SEARCH);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 相同图检索—更新接口
-        /// 更新图库中图片的摘要和分类信息（具体变量为brief、tags）
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、tags）**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -155,10 +210,63 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 相同图检索—更新接口
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、tags）**
+
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SameHqUpdateUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SAME_HQ_UPDATE);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        /// <summary>
+        /// 相同图检索—更新接口
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、tags）**
+
+        /// </summary>
+        /// <param name="contSign">图片签名</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SameHqUpdateContSign(string contSign, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SAME_HQ_UPDATE);
+            
+            aipReq.Bodys["cont_sign"] = contSign;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 相同图检索—删除接口
-        /// 删除相同图
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -182,9 +290,34 @@ namespace Baidu.Aip.ImageSearch
         }
         /// <summary>
         /// 相同图检索—删除接口
-        /// 删除相同图
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
         /// </summary>
-        /// <param name="contSign">图片签名（和image二选一），**支持批量删除，批量删除时请勿传image，最多支持1000个cont_sign列表，**样例："932301884,1068006219;316336521,553141152;2491030726,1352091083"</param>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SameHqDeleteByUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SAME_HQ_DELETE);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        /// <summary>
+        /// 相同图检索—删除接口
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
+        /// </summary>
+        /// <param name="contSign">图片签名</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///     </list>
@@ -206,7 +339,8 @@ namespace Baidu.Aip.ImageSearch
 
         /// <summary>
         /// 相似图检索—入库接口
-        /// 该请求用于实时检索相似图片集合。即对于输入的一张图片（可正常解码，且长宽比适宜），返回自建图库中相似的图片集合。相似图检索包含入库、检索、删除三个子接口；**在正式使用之前请在[控制台](https://console.bce.baidu.com/ai/#/ai/imagesearch/overview/index)创建应用后，在应用详情页申请建库，建库成功后方可正常使用入库、检索、删除三个接口。**
+        /// **该接口实现单张图片入库，入库时需要同步提交图片及可关联至本地图库的摘要信息（具体变量为brief，具体可传入图片在本地标记id、图片url、图片名称等）；同时可提交分类维度信息（具体变量为tags，最多可传入2个tag），方便对图库中的图片进行管理、分类检索。****注：重复添加完全相同的图片会返回错误。**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -230,10 +364,36 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 相似图检索—入库接口
+        /// **该接口实现单张图片入库，入库时需要同步提交图片及可关联至本地图库的摘要信息（具体变量为brief，具体可传入图片在本地标记id、图片url、图片名称等）；同时可提交分类维度信息（具体变量为tags，最多可传入2个tag），方便对图库中的图片进行管理、分类检索。****注：重复添加完全相同的图片会返回错误。**
+
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 检索时原样带回,最长256B。 </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SimilarAddUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SIMILAR_ADD);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 相似图检索—检索接口
-        /// 相似图检索包含入库、检索、删除三个子接口；**在正式使用之前请在[控制台](https://console.bce.baidu.com/ai/#/ai/imagesearch/overview/index)创建应用后，在应用详情页申请建库，建库成功后方可正常使用入库、检索、删除三个接口。**
+        /// 完成入库后，可使用该接口实现相似图检索。**支持传入指定分类维度（具体变量tags）进行检索，返回结果支持翻页（具体变量pn、rn）。****请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息。**
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -259,10 +419,38 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 相似图检索—检索接口
+        /// 完成入库后，可使用该接口实现相似图检索。**支持传入指定分类维度（具体变量tags）进行检索，返回结果支持翻页（具体变量pn、rn）。****请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息。**
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///           <item>  <c>tag_logic</c>: 检索时tag之间的逻辑， 0：逻辑and，1：逻辑or </item>
+        ///           <item>  <c>pn</c>: 分页功能，起始位置，例：0。未指定分页时，默认返回前300个结果；接口返回数量最大限制1000条，例如：起始位置为900，截取条数500条，接口也只返回第900 - 1000条的结果，共计100条 </item>
+        ///           <item>  <c>rn</c>: 分页功能，截取条数，例：250 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SimilarSearchUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SIMILAR_SEARCH);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 相似图检索—更新接口
-        /// 更新图库中图片的摘要和分类信息（具体变量为brief、tags）
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、tags）**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -286,10 +474,63 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 相似图检索—更新接口
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、tags）**
+
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SimilarUpdateUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SIMILAR_UPDATE);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        /// <summary>
+        /// 相似图检索—更新接口
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、tags）**
+
+        /// </summary>
+        /// <param name="contSign">图片签名</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>tags</c>: 1 - 65535范围内的整数，tag间以逗号分隔，最多2个tag。样例："100,11" ；检索时可圈定分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SimilarUpdateContSign(string contSign, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SIMILAR_UPDATE);
+            
+            aipReq.Bodys["cont_sign"] = contSign;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 相似图检索—删除接口
-        /// 删除相似图
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -313,9 +554,34 @@ namespace Baidu.Aip.ImageSearch
         }
         /// <summary>
         /// 相似图检索—删除接口
-        /// 删除相似图
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
         /// </summary>
-        /// <param name="contSign">图片签名（和image二选一，image优先级更高）</param>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject SimilarDeleteByUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(SIMILAR_DELETE);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        /// <summary>
+        /// 相似图检索—删除接口
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
+        /// </summary>
+        /// <param name="contSign">图片签名</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///     </list>
@@ -337,7 +603,8 @@ namespace Baidu.Aip.ImageSearch
 
         /// <summary>
         /// 商品检索—入库接口
-        /// 该请求用于实时检索商品类型图片相同或相似的图片集合，适用于电商平台或商品展示等场景，即对于输入的一张图片（可正常解码，且长宽比适宜），返回自建商品库中相同或相似的图片集合。商品检索包含入库、检索、删除三个子接口；**在正式使用之前请在[控制台](https://console.bce.baidu.com/ai/#/ai/imagesearch/overview/index)创建应用后，在应用详情页申请建库，建库成功后方可正常使用入库、检索、删除三个接口**。
+        /// **该接口实现单张图片入库，入库时需要同步提交图片及可关联至本地图库的摘要信息（具体变量为brief，具体可传入图片在本地标记id、图片url、图片名称等）。同时可提交分类维度信息（具体变量为class_id1、class_id2），方便对图库中的图片进行管理、分类检索。****注：重复添加完全相同的图片会返回错误。**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -362,10 +629,37 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 商品检索—入库接口
+        /// **该接口实现单张图片入库，入库时需要同步提交图片及可关联至本地图库的摘要信息（具体变量为brief，具体可传入图片在本地标记id、图片url、图片名称等）。同时可提交分类维度信息（具体变量为class_id1、class_id2），方便对图库中的图片进行管理、分类检索。****注：重复添加完全相同的图片会返回错误。**
+
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 检索时原样带回,最长256B。**请注意，检索接口不返回原图，仅反馈当前填写的brief信息，所以调用该入库接口时，brief信息请尽量填写可关联至本地图库的图片id或者图片url、图片名称等信息** </item>
+        ///           <item>  <c>class_id1</c>: 商品分类维度1，支持1-60范围内的整数。检索时可圈定该分类维度进行检索 </item>
+        ///           <item>  <c>class_id2</c>: 商品分类维度1，支持1-60范围内的整数。检索时可圈定该分类维度进行检索 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject ProductAddUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PRODUCT_ADD);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 商品检索—检索接口
-        /// 完成入库后，可使用该接口实现商品检索。**请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息**
+        /// 完成入库后，可使用该接口实现商品检索。**支持传入指定分类维度（具体变量class_id1、class_id2）进行检索，返回结果支持翻页（具体变量pn、rn）。****请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息**
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -391,10 +685,38 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 商品检索—检索接口
+        /// 完成入库后，可使用该接口实现商品检索。**支持传入指定分类维度（具体变量class_id1、class_id2）进行检索，返回结果支持翻页（具体变量pn、rn）。****请注意，检索接口不返回原图，仅反馈当前填写的brief信息，请调用入库接口时尽量填写可关联至本地图库的图片id或者图片url等信息**
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>class_id1</c>: 商品分类维度1，支持1-60范围内的整数。检索时可圈定该分类维度进行检索 </item>
+        ///           <item>  <c>class_id2</c>: 商品分类维度1，支持1-60范围内的整数。检索时可圈定该分类维度进行检索 </item>
+        ///           <item>  <c>pn</c>: 分页功能，起始位置，例：0。未指定分页时，默认返回前300个结果；接口返回数量最大限制1000条，例如：起始位置为900，截取条数500条，接口也只返回第900 - 1000条的结果，共计100条 </item>
+        ///           <item>  <c>rn</c>: 分页功能，截取条数，例：250 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject ProductSearchUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PRODUCT_SEARCH);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 商品检索—更新接口
-        /// 更新图库中图片的摘要和分类信息（具体变量为brief、class_id1/class_id2）
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、class_id1/class_id2）**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -419,10 +741,65 @@ namespace Baidu.Aip.ImageSearch
                     aipReq.Bodys[pair.Key] = pair.Value;
             return PostAction(aipReq);
         }
+        /// <summary>
+        /// 商品检索—更新接口
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、class_id1/class_id2）**
+
+        /// </summary>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>class_id1</c>: 更新的商品分类1，支持1-60范围内的整数。 </item>
+        ///           <item>  <c>class_id2</c>: 更新的商品分类2，支持1-60范围内的整数。 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject ProductUpdateUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PRODUCT_UPDATE);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        /// <summary>
+        /// 商品检索—更新接口
+        /// **更新图库中图片的摘要和分类信息（具体变量为brief、class_id1/class_id2）**
+
+        /// </summary>
+        /// <param name="contSign">图片签名</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>brief</c>: 更新的摘要信息，最长256B。样例：{"name":"周杰伦", "id":"666"} </item>
+        ///           <item>  <c>class_id1</c>: 更新的商品分类1，支持1-60范围内的整数。 </item>
+        ///           <item>  <c>class_id2</c>: 更新的商品分类2，支持1-60范围内的整数。 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject ProductUpdateContSign(string contSign, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PRODUCT_UPDATE);
+            
+            aipReq.Bodys["cont_sign"] = contSign;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
         /// <summary>
         /// 商品检索—删除接口
-        /// 删除商品
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
         /// </summary>
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
@@ -446,9 +823,34 @@ namespace Baidu.Aip.ImageSearch
         }
         /// <summary>
         /// 商品检索—删除接口
-        /// 删除商品
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
         /// </summary>
-        /// <param name="contSign">图片签名（和image二选一，image优先级更高）</param>
+        /// <param name="url">图片完整URL，URL长度不超过1024字节，URL对应的图片base64编码后大小不超过4M，最短边至少15px，最长边最大4096px,支持jpg/png/bmp格式，当image字段存在时url字段失效</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject ProductDeleteByUrl(string url, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(PRODUCT_DELETE);
+            
+            aipReq.Bodys["url"] = url;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        /// <summary>
+        /// 商品检索—删除接口
+        /// **删除图库中的图片，支持批量删除，批量删除时请传cont_sign参数，勿传image，最多支持1000个cont_sign**
+
+        /// </summary>
+        /// <param name="contSign">图片签名</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///     </list>

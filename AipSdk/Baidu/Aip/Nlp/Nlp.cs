@@ -61,6 +61,9 @@ namespace Baidu.Aip.Nlp
         private const string EMOTION =
             "https://aip.baidubce.com/rpc/2.0/nlp/v1/emotion";
         
+        private const string NEWS_SUMMARY =
+            "https://aip.baidubce.com/rpc/2.0/nlp/v1/news_summary";
+        
         public Nlp(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
@@ -393,6 +396,33 @@ namespace Baidu.Aip.Nlp
             var aipReq = DefaultRequest(EMOTION);
             
             aipReq.Bodys["text"] = text;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 新闻摘要接口接口
+        /// 自动抽取新闻文本中的关键信息，进而生成指定长度的新闻摘要
+        /// </summary>
+        /// <param name="content">字符串（限200字符数）字符串仅支持GBK编码，长度需小于200字符数（即400字节），请输入前确认字符数没有超限，若字符数超长会返回错误。标题在算法中具有重要的作用，若文章确无标题，输入参数的“标题”字段为空即可</param>
+        /// <param name="maxSummaryLen">此数值将作为摘要结果的最大长度。例如：原文长度1000字，本参数设置为150，则摘要结果的最大长度是150字；推荐最优区间：200-500字</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>title</c>: 字符串（限200字符数）字符串仅支持GBK编码，长度需小于200字符数（即400字节），请输入前确认字符数没有超限，若字符数超长会返回错误。标题在算法中具有重要的作用，若文章确无标题，输入参数的“标题”字段为空即可 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject NewsSummary(string content, int maxSummaryLen, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(NEWS_SUMMARY);
+            
+            aipReq.Bodys["content"] = content;
+            aipReq.Bodys["max_summary_len"] = maxSummaryLen;
             PreAction();
 
             if (options != null)

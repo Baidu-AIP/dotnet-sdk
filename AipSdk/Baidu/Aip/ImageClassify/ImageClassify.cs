@@ -49,6 +49,9 @@ namespace Baidu.Aip.ImageClassify
         private const string OBJECT_DETECT =
             "https://aip.baidubce.com/rest/2.0/image-classify/v1/object_detect";
         
+        private const string LANDMARK =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/landmark";
+        
         public ImageClassify(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
@@ -71,6 +74,7 @@ namespace Baidu.Aip.ImageClassify
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
+        ///           <item>  <c>baike_num</c>: 返回百科信息的结果数，默认不返回 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -97,6 +101,8 @@ namespace Baidu.Aip.ImageClassify
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>top_num</c>: 返回预测得分top结果数，默认为5 </item>
+        ///           <item>  <c>filter_threshold</c>: 默认0.95，可以通过该参数调节识别效果，降低非菜识别率. </item>
+        ///           <item>  <c>baike_num</c>: 返回百科信息的结果数，默认不返回 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -123,6 +129,7 @@ namespace Baidu.Aip.ImageClassify
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>top_num</c>: 返回预测得分top结果数，默认为5 </item>
+        ///           <item>  <c>baike_num</c>: 返回百科信息的结果数，默认不返回 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -250,6 +257,7 @@ namespace Baidu.Aip.ImageClassify
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
         ///           <item>  <c>top_num</c>: 返回预测得分top结果数，默认为6 </item>
+        ///           <item>  <c>baike_num</c>: 返回百科信息的结果数，默认不返回 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -275,6 +283,7 @@ namespace Baidu.Aip.ImageClassify
         /// <param name="image">二进制图像数据</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
+        ///           <item>  <c>baike_num</c>: 返回百科信息的结果数，默认不返回 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
@@ -308,6 +317,31 @@ namespace Baidu.Aip.ImageClassify
         public JObject ObjectDetect(byte[] image, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(OBJECT_DETECT);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 地标识别接口
+        /// 该请求用于识别地标，即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片中的地标识别结果。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Landmark(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(LANDMARK);
             
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);

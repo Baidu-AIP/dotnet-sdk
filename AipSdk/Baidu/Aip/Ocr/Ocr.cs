@@ -63,6 +63,12 @@ namespace Baidu.Aip.Ocr
         private const string RECEIPT =
             "https://aip.baidubce.com/rest/2.0/ocr/v1/receipt";
         
+        private const string TRAIN_TICKET =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/train_ticket";
+        
+        private const string TAXI_RECEIPT =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/taxi_receipt";
+        
         private const string FORM =
             "https://aip.baidubce.com/rest/2.0/ocr/v1/form";
         
@@ -578,6 +584,56 @@ namespace Baidu.Aip.Ocr
         }
 
         /// <summary>
+        /// 火车票识别接口
+        /// 支持对大陆火车票的车票号、始发站、目的站、车次、日期、票价、席别、姓名进行结构化识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject TrainTicket(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(TRAIN_TICKET);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 出租车票识别接口
+        /// 针对出租车票（现支持北京）的发票号码、发票代码、车号、日期、时间、金额进行结构化识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject TaxiReceipt(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(TAXI_RECEIPT);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
         /// 表格文字识别同步接口接口
         /// 自动识别表格线及表格内容，结构化输出表头、表尾及每个单元格的文字内容。
         /// </summary>
@@ -836,20 +892,20 @@ namespace Baidu.Aip.Ocr
         /// 自定义模板文字识别，是针对百度官方没有推出相应的模板，但是当用户需要对某一类卡证/票据（如房产证、军官证、火车票等）进行结构化的提取内容时，可以使用该产品快速制作模板，进行识别。
         /// </summary>
         /// <param name="image">二进制图像数据</param>
-        /// <param name="templateSign">您在自定义文字识别平台制作的模板的ID</param>
         /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
         ///     <list type="bullet">
+        ///           <item>  <c>templateSign</c>: 您在自定义文字识别平台制作的模板的ID </item>
+        ///           <item>  <c>classifierId</c>: 分类器Id。这个参数和templateSign至少存在一个，优先使用templateSign。存在templateSign时，表示使用指定模板；如果没有templateSign而有classifierId，表示使用分类器去判断使用哪个模板 </item>
         ///     </list>
         /// </param>
         /// <return>JObject</return>
         ///
-        public JObject Custom(byte[] image, string templateSign, Dictionary<string, object> options = null)
+        public JObject Custom(byte[] image, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(CUSTOM);
             
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
-            aipReq.Bodys["templateSign"] = templateSign;
             PreAction();
 
             if (options != null)
