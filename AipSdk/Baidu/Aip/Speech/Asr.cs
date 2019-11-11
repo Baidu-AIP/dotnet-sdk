@@ -28,6 +28,7 @@ namespace Baidu.Aip.Speech
     public class Asr : Base
     {
         public const string UrlAsr = "https://vop.baidu.com/server_api";
+        public const string UrlAsrPro = "https://vop.baidu.com/pro_api";
         public const string UrlAsrStream = "https://vop.baidu.com/open/asr";
 
         //8k  2560 16k 5120
@@ -109,6 +110,39 @@ namespace Baidu.Aip.Speech
             if (!req.Bodys.ContainsKey("channel"))
                 req.Bodys["channel"] = 1;
             req.Bodys["token"] = Token;
+            return PostAction(req);
+        }
+
+        /// <summary>
+        /// 语音识别极速版
+        /// </summary>
+        /// <param name="data">语音数据</param>
+        /// <param name="format">格式：pcm amr</param>
+        /// <param name="rate">16000</param>
+        /// <param name="devPid"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public JObject RecognizePro(byte[] data, string format, int rate = 16000, int devPid = 80001, Dictionary<string, object> options = null)
+        {
+            PreAction();
+            CheckNotNull(data, "data");
+            CheckNotNull(format, "format");
+            var req = DefaultRequest(UrlAsrPro);
+            req.Bodys["format"] = format;
+            req.Bodys["rate"] = rate;
+
+            if (options != null)
+                foreach (var pair in options)
+                    req.Bodys[pair.Key] = pair.Value;
+            if (!req.Bodys.ContainsKey("cuid"))
+                req.Bodys["cuid"] = Cuid;
+
+            if (!req.Bodys.ContainsKey("channel"))
+                req.Bodys["channel"] = 1;
+            req.Bodys["len"] = data.Length;
+            req.Bodys["speech"] = Convert.ToBase64String(data);
+            req.Bodys["token"] = Token;
+            req.Bodys["dev_pid"] = devPid;
             return PostAction(req);
         }
 

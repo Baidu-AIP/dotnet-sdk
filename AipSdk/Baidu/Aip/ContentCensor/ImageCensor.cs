@@ -22,7 +22,7 @@ namespace Baidu.Aip.ContentCensor
     /// </summary>
     public class ImageCensor : Base
     {
-        public const string USER_DEFINED = "https://aip.baidubce.com/rest/2.0/solution/v1/img_censor/user_defined";
+        public const string USER_DEFINED = "https://aip.baidubce.com/rest/2.0/solution/v1/img_censor/v2/user_defined";
         
         public ImageCensor(string apiKey, string secretKey) : base(apiKey, secretKey)
         {

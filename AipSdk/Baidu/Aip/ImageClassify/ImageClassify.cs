@@ -52,6 +52,18 @@ namespace Baidu.Aip.ImageClassify
         private const string LANDMARK =
             "https://aip.baidubce.com/rest/2.0/image-classify/v1/landmark";
         
+        private const string FLOWER =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/flower";
+        
+        private const string INGREDIENT =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/classify/ingredient";
+        
+        private const string REDWINE =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/redwine";
+        
+        private const string CURRENCY =
+            "https://aip.baidubce.com/rest/2.0/image-classify/v1/currency";
+        
         public ImageClassify(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
@@ -342,6 +354,109 @@ namespace Baidu.Aip.ImageClassify
         public JObject Landmark(byte[] image, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(LANDMARK);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 花卉识别接口
+        /// 检测用户上传的花卉图片，输出图片的花卉识别结果名称及对应的概率打分。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>top_num</c>: 返回预测得分top结果数，默认为5 </item>
+        ///           <item>  <c>baike_num</c>: 返回百科信息的结果数，默认不返回 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Flower(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(FLOWER);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 食材识别接口
+        /// 该请求用于识别果蔬类食材，即对于输入的一张图片（可正常解码，且长宽比适宜），输出图片中的果蔬食材结果。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>top_num</c>: 返回预测得分top结果数，如果为空或小于等于0默认为5；如果大于20默认20 </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Ingredient(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(INGREDIENT);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 红酒识别接口
+        /// 该服务用于识别红酒标签，即对于输入的一张图片（可正常解码，长宽比适宜，且酒标清晰可见），输出图片中的红酒名称、国家、产区、酒庄、类型、糖分、葡萄品种、酒品描述等信息。可识别数十万中外常见红酒。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Redwine(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(REDWINE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 货币识别接口
+        /// 识别图像中的货币类型，以纸币为主，正反面均可准确识别，接口返回货币的名称、代码、面值、年份信息；可识别各类近代常见货币，如美元、欧元、英镑、法郎、澳大利亚元、俄罗斯卢布、日元、韩元、泰铢、印尼卢比等。
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Currency(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(CURRENCY);
             
             CheckNotNull(image, "image");
             aipReq.Bodys["image"] = System.Convert.ToBase64String(image);

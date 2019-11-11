@@ -24,7 +24,10 @@ namespace Baidu.Aip.ContentCensor
         
         private const string ANTI_SPAM =
             "https://aip.baidubce.com/rest/2.0/antispam/v2/spam";
-        
+
+        private const string USER_DEFINED =
+            "https://aip.baidubce.com/rest/2.0/solution/v1/text_censor/v2/user_defined";
+
         public TextCensor(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
 
@@ -51,6 +54,7 @@ namespace Baidu.Aip.ContentCensor
         /// </param>
         /// <return>JObject</return>
         ///
+        [System.Obsolete("AntiSpam is deprecated.")]
         public JObject AntiSpam(string content, Dictionary<string, object> options = null)
         {
             var aipReq = DefaultRequest(ANTI_SPAM);
@@ -64,6 +68,24 @@ namespace Baidu.Aip.ContentCensor
             return PostAction(aipReq);
         }
 
+        /// <summary>
+        /// 内容审核文本API接口
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public JObject TextCensorUserDefined(string text, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(USER_DEFINED);
+
+            aipReq.Bodys["text"] = text;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
 
     }
 }

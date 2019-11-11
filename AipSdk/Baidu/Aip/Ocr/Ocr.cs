@@ -78,6 +78,39 @@ namespace Baidu.Aip.Ocr
         private const string TABLE_RESULT_GET =
             "https://aip.baidubce.com/rest/2.0/solution/v1/form_ocr/get_request_result";
         
+        private const string VIN_CODE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/vin_code";
+        
+        private const string QUOTA_INVOICE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/quota_invoice";
+        
+        private const string HOUSEHOLD_REGISTER =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/household_register";
+        
+        private const string HK_MACAU_EXITENTRYPERMIT =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/HK_Macau_exitentrypermit";
+        
+        private const string TAIWAN_EXITENTRYPERMIT =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/taiwan_exitentrypermit";
+        
+        private const string BIRTH_CERTIFICATE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/birth_certificate";
+        
+        private const string VEHICLE_INVOICE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/vehicle_invoice";
+        
+        private const string VEHICLE_CERTIFICATE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/vehicle_certificate";
+        
+        private const string INVOICE =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/invoice";
+        
+        private const string AIR_TICKET =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/air_ticket";
+        
+        private const string INSURANCE_DOCUMENTS =
+            "https://aip.baidubce.com/rest/2.0/ocr/v1/insurance_documents";
+        
         private const string VAT_INVOICE =
             "https://aip.baidubce.com/rest/2.0/ocr/v1/vat_invoice";
         
@@ -700,6 +733,284 @@ namespace Baidu.Aip.Ocr
             var aipReq = DefaultRequest(TABLE_RESULT_GET);
             
             aipReq.Bodys["request_id"] = requestId;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// VIN码识别接口
+        /// 对车辆车架上、挡风玻璃上的VIN码进行识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject VinCode(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(VIN_CODE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 定额发票识别接口
+        /// 对各类定额发票的代码、号码、金额进行识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject QuotaInvoice(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(QUOTA_INVOICE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 户口本识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对出生地、出生日期、姓名、民族、与户主关系、性别、身份证号码字段进行识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject HouseholdRegister(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(HOUSEHOLD_REGISTER);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 港澳通行证识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对港澳通行证证号、姓名、姓名拼音、性别、有效期限、签发地点、出生日期字段进行识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject HkMacauExitentrypermit(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(HK_MACAU_EXITENTRYPERMIT);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 台湾通行证识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对台湾通行证证号、签发地、出生日期、姓名、姓名拼音、性别、有效期字段进行识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject TaiwanExitentrypermit(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(TAIWAN_EXITENTRYPERMIT);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 出生医学证明识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对台湾通行证证号、签发地、出生日期、姓名、姓名拼音、性别、有效期字段进行识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject BirthCertificate(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(BIRTH_CERTIFICATE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 机动车销售发票识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】识别机动车销售发票号码、代码、日期、价税合计等14个字段
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject VehicleInvoice(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(VEHICLE_INVOICE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 车辆合格证识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】识别车辆合格证编号、车架号、排放标准、发动机编号等12个字段
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject VehicleCertificate(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(VEHICLE_CERTIFICATE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 税务局通用机打发票识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对国家/地方税务局发行的横/竖版通用机打发票的号码、代码、日期、合计金额、类型、商品名称字段进行结构化识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>location</c>: 是否输出位置信息，true：输出位置信息，false：不输出位置信息，默认false </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject Invoice(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(INVOICE);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 行程单识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对飞机行程单中的姓名、始发站、目的站、航班号、日期、票价字段进行结构化识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>location</c>: 是否输出位置信息，true：输出位置信息，false：不输出位置信息，默认false </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject AirTicket(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(AIR_TICKET);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+
+        /// <summary>
+        /// 保单识别接口
+        /// 【此接口需要您在[申请页面](https://cloud.baidu.com/survey/AICooperativeConsultingApply.html)中提交合作咨询开通权限】对各类保单中投保人、受益人的各项信息、保费、保险名称等字段进行结构化识别
+        /// </summary>
+        /// <param name="image">二进制图像数据</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///           <item>  <c>rkv_business</c>: 是否进行商业逻辑处理，rue：进行商业逻辑处理，false：不进行商业逻辑处理，默认true </item>
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject InsuranceDocuments(byte[] image, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(INSURANCE_DOCUMENTS);
+            
+            CheckNotNull(image, "image");
+            aipReq.Bodys["image"] = System.Convert.ToBase64String(image);
             PreAction();
 
             if (options != null)
