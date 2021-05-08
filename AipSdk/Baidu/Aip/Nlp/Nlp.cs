@@ -63,6 +63,9 @@ namespace Baidu.Aip.Nlp
         
         private const string NEWS_SUMMARY =
             "https://aip.baidubce.com/rpc/2.0/nlp/v1/news_summary";
+            
+        private const string ADDRESS_DISCERN =
+            "https://aip.baidubce.com/rpc/2.0/nlp/v1/address";
         
         public Nlp(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
@@ -423,6 +426,30 @@ namespace Baidu.Aip.Nlp
             
             aipReq.Bodys["content"] = content;
             aipReq.Bodys["max_summary_len"] = maxSummaryLen;
+            PreAction();
+
+            if (options != null)
+                foreach (var pair in options)
+                    aipReq.Bodys[pair.Key] = pair.Value;
+            return PostAction(aipReq);
+        }
+        
+        /// <summary> 
+        /// 地址识别
+        /// 针对快递、电商行业中客户在线提交的大量非结构化地址单据，该接口可以帮助精准提取快递填单文本中的姓名、电话、地址信息，通过自然语言处理辅助地址识别做自动补充和纠正，生成标准规范的结构化信息，大幅提升企业处理单据的效率。
+        /// </summary>
+        /// <param name="text">待识别文本（文本内容可以支持GBK和UTF-8两种格式的编码）</param>
+        /// <param name="options"> 可选参数对象，key: value都为string类型，可选的参数包括
+        ///     <list type="bullet">
+        ///     </list>
+        /// </param>
+        /// <return>JObject</return>
+        ///
+        public JObject AddressDiscern(string text, Dictionary<string, object> options = null)
+        {
+            var aipReq = DefaultRequest(ADDRESS_DISCERN);
+            
+            aipReq.Bodys["text"] = text;
             PreAction();
 
             if (options != null)
